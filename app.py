@@ -1,12 +1,14 @@
 from flask import Flask, render_template, request, jsonify
 import os
 from groq import Groq
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
 # Initialize Groq client
-# Get your free API key from: https://console.groq.com/
-# Set it as an environment variable: export GROQ_API_KEY='your-key-here'
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 def estimate_words_from_minutes(minutes):
