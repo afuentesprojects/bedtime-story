@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(.venvScriptspython.exe -c \"from app import generate_story; print\\(''app.py imports OK - generate_story function is ready''\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"from app import generate_story; print\\(''app.py imports OK - generate_story function is ready''\\)\")",
+      "Bash(./venv/Scripts/python.exe -c \"from llm_config import build_story_prompt; prompt = build_story_prompt\\(''classic'', 3, ''Spanish''\\); print\\(prompt\\)\")",
+      "Bash(./venv/Scripts/python.exe:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd email/password authentication and refactor LLM config\n\n- Create auth.py with secure password hashing \\(scrypt\\) and token generation\n- Create llm_config.py to separate LLM settings and prompts from app.py\n- Add users table with email, password_hash, display_name, token\n- Update saved_stories to use user_id foreign key instead of username\n- Add /register and /login endpoints with token-based auth\n- Update all story routes to require authentication\n- Replace simple username input with Login/Register forms in frontend\n- Update CLAUDE.md with Android app backlog and architecture decision\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+    ]
+  }
+}

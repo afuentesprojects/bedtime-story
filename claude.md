@@ -1,25 +1,60 @@
 # Bedtime Story Generator - Project Context
 
 ## Project Overview
-A web application that generates AI-powered bedtime stories for children of ages 4 -8 using the Groq API (Llama models). Users can customize story length, type, and language.
+A **native Android mobile application** (with web support) that generates AI-powered bedtime stories for children ages 4-8 using the Groq API (Llama models). Users can customize story length, type, language, and tone.
+
+## Architecture Decision
+**Decision Date:** January 2026
+
+We are transitioning from a Flask web app to a **Native Android App** built with Kotlin, while maintaining the Python/Flask backend as an API server. This gives us:
+- Full Play Store distribution
+- Best native Android experience
+- Access to all Android features
+- Separate optimized frontends for mobile and web
 
 ## Tech Stack
-- **Backend:** Python 3.11, Flask 3.0.0
-- **Frontend:** HTML, CSS, Vanilla JavaScript (no frameworks)
+- **Backend (API):** Python 3.11, Flask 3.0.0 (serves as REST API)
+- **Mobile Frontend:** Kotlin, Android SDK (Native Android)
+- **Web Frontend:** HTML, CSS, Vanilla JavaScript (maintained for web access)
 - **AI:** Groq API with Llama 3.3 70B model
+- **Database:** SQLite (local) → will need cloud DB for cross-device sync
 - **Environment:** python-dotenv for API key management
 
-## Project Structure
+## Project Structure (Current - Web MVP)
 ```
 bedtime_story_app/
 ├── app.py              # Flask backend with API routes
+├── auth.py             # Authentication utilities (password hashing, tokens)
+├── llm_config.py       # LLM settings and prompt templates
 ├── templates/
-│   └── index.html      # Frontend interface
+│   └── index.html      # Web frontend interface
 ├── static/
-│   └── style.css       # Styling
+│   └── style.css       # Web styling
 ├── .env                # API keys (gitignored, not to be modified)
 ├── requirements.txt    # Python dependencies
 └── venv/               # Virtual environment
+```
+
+## Project Structure (Target - Android + Web)
+```
+bedtime_story_app/
+├── backend/                    # Flask API server
+│   ├── app.py                  # Main API routes
+│   ├── llm_config.py           # LLM prompts and configuration
+│   ├── auth.py                 # Authentication logic
+│   ├── requirements.txt
+│   └── .env
+├── android/                    # Native Android app (Kotlin)
+│   ├── app/
+│   │   └── src/main/
+│   │       ├── java/...        # Kotlin source files
+│   │       └── res/...         # Android resources
+│   └── build.gradle
+├── web/                        # Web frontend (optional, for browser access)
+│   ├── index.html
+│   └── style.css
+└── shared/                     # Shared assets (stories catalog, etc.)
+    └── classic_tales.json      # Catalog of classic stories
 ```
 
 ## Key Features
@@ -57,11 +92,47 @@ bedtime_story_app/
 - Don't remove the word count estimation logic
 - Maintain Flask's simple structure (no blueprints needed yet)
 
-## Current Limitations & Future Ideas
-- No database yet (stories aren't saved)
-- No user authentication
-- No story history
-- Could add: themes, character names, illustrations, voice narration
+## Current Limitations
+- Stories saved locally only (no cloud sync)
+- No personalization settings
+
+---
+
+# BACKLOG
+
+## Priority 1: Backend Refactoring (Required before Android)
+- [x] **Separate LLM configuration** - Extract prompts and LLM settings into `llm_config.py` ✓ DONE
+- [x] **User Authentication** - Email/password auth with secure password hashing ✓ DONE
+
+## Priority 2: Core Features
+- [ ] **Settings Page** - User customizations including:
+  - Default story duration
+  - Child age (affects vocabulary and themes)
+  - Story tone options: Funny, Soothing, Educational, Christian, Adventure, etc.
+  - Preferred language
+- [ ] **Classic Tales Catalog** - JSON database of traditional stories:
+  - Grimm's fairy tales
+  - Aesop's fables
+  - Classic bedtime stories
+  - Searchable/browsable in-app
+
+## Priority 3: Android App
+- [ ] **Android Project Setup** - Create Kotlin Android project with Android Studio
+- [ ] **API Client** - Connect Android app to Flask backend
+- [ ] **Story Generation Screen** - Port story form to native Android UI
+- [ ] **My Stories Screen** - View saved stories
+- [ ] **Settings Screen** - User preferences
+- [ ] **Play Store Preparation** - Icons, screenshots, listing
+
+## Priority 4: Future Enhancements
+- [ ] Cloud database for cross-device sync
+- [ ] Character name customization
+- [ ] Story illustrations (AI-generated)
+- [ ] Voice narration (text-to-speech)
+- [ ] Offline mode with cached stories
+- [ ] Family accounts (multiple children profiles)
+
+---
 
 ## Testing
 - Manual testing in browser

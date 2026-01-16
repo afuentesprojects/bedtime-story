@@ -3,6 +3,8 @@ import os
 import sqlite3
 from groq import Groq
 from dotenv import load_dotenv
+from llm_config import MODEL_NAME, TEMPERATURE, MAX_TOKENS, SYSTEM_PROMPT, build_story_prompt
+from auth import hash_password, verify_password, generate_token
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,10 +23,24 @@ def get_db():
 def init_db():
     """Initialize the database with required tables."""
     conn = get_db()
+
+    # Users table
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password_hash TEXT NOT NULL,
+            display_name TEXT,
+            token TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+
+    # Saved stories table
     conn.execute('''
         CREATE TABLE IF NOT EXISTS saved_stories (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT NOT NULL,
+            user_id INTEGER NOT NULL,
             title TEXT,
             story_text TEXT NOT NULL,
             story_type TEXT,
@@ -32,14 +48,17 @@ def init_db():
             length_minutes INTEGER,
             modifications TEXT,
             rating INTEGER CHECK(rating >= 1 AND rating <= 5),
-            saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            saved_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
-    # Add title column if it doesn't exist (for existing databases)
+
+    # Migration: Add user_id column if updating from old schema
     try:
-        conn.execute('ALTER TABLE saved_stories ADD COLUMN title TEXT')
+        conn.execute('ALTER TABLE saved_stories ADD COLUMN user_id INTEGER')
     except sqlite3.OperationalError:
         pass  # Column already exists
+
     conn.commit()
     conn.close()
 
@@ -49,57 +68,27 @@ init_db()
 # Initialize Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def estimate_words_from_minutes(minutes):
-    """Estimate word count based on reading time (avg 180 words/min for children's stories)"""
-    return int(minutes * 180)
-
 def generate_story(story_type, length_minutes, language, modifications=""):
     """Generate a bedtime story using Groq API"""
-    
-    word_count = estimate_words_from_minutes(length_minutes)
-    
-    # Title instruction
-    title_instruction_en = "Start with a creative title (less than 10 words) on its own line, then a blank line, then the story."
-    title_instruction_es = "Comienza con un título creativo (menos de 10 palabras) en su propia línea, luego una línea en blanco, y después la historia."
 
-    # Build the prompt based on story type and language
-    if language == "Spanish":
-        lang_instruction = "Escribe la historia completamente en español."
-        if story_type == "made_up":
-            prompt = f"{lang_instruction} {title_instruction_es} Crea una historia original para dormir de aproximadamente {word_count} palabras. Hazla mágica, relajante y apropiada para niños."
-        elif story_type == "classic":
-            prompt = f"{lang_instruction} {title_instruction_es} Cuenta una historia clásica para dormir (como Caperucita Roja, Los Tres Cerditos, etc.) en aproximadamente {word_count} palabras. Hazla apropiada para niños."
-        else:  # mixed
-            prompt = f"{lang_instruction} {title_instruction_es} Cuenta una historia clásica para dormir pero con estas modificaciones: {modifications}. La historia debe tener aproximadamente {word_count} palabras y ser apropiada para niños."
-    else:  # English
-        if story_type == "made_up":
-            prompt = f"{title_instruction_en} Create an original bedtime story of approximately {word_count} words. Make it magical, soothing, and child-appropriate."
-        elif story_type == "classic":
-            prompt = f"{title_instruction_en} Tell a classic bedtime story (like Little Red Riding Hood, Three Little Pigs, etc.) in approximately {word_count} words. Make it child-appropriate."
-        else:  # mixed
-            prompt = f"{title_instruction_en} Tell a classic bedtime story but with these modifications: {modifications}. The story should be approximately {word_count} words and child-appropriate."
-    
+    # Build prompt using config
+    prompt = build_story_prompt(story_type, length_minutes, language, modifications)
+
     try:
-        # Call Groq API with Llama model
+        # Call Groq API with settings from llm_config
         chat_completion = client.chat.completions.create(
             messages=[
-                {
-                    "role": "system",
-                    "content": "You are a creative storyteller who writes engaging, soothing bedtime stories for children. Your stories are imaginative, age-appropriate for 4 to 10 year old, funny, and help children relax before sleep. Use simple vocabulary"
-                },
-                {
-                    "role": "user",
-                    "content": prompt
-                }
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": prompt}
             ],
-            model="llama-3.3-70b-versatile",  # Free lightweight model
-            temperature=0.7,
-            max_tokens=2048,
+            model=MODEL_NAME,
+            temperature=TEMPERATURE,
+            max_tokens=MAX_TOKENS,
         )
-        
+
         story = chat_completion.choices[0].message.content
         return {"success": True, "story": story}
-    
+
     except Exception as e:
         return {"success": False, "error": str(e)}
 
@@ -119,26 +108,129 @@ def generate():
     result = generate_story(story_type, length, language, modifications)
     return jsonify(result)
 
-@app.route('/save-story', methods=['POST'])
-def save_story():
-    """Save a story to the database."""
+
+# =============================================================================
+# AUTHENTICATION ROUTES
+# =============================================================================
+
+@app.route('/register', methods=['POST'])
+def register():
+    """Register a new user with email and password."""
     data = request.json
 
-    username = data.get('username')
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+    display_name = data.get('display_name', '').strip()
+
+    # Validation
+    if not email or not password:
+        return jsonify({"success": False, "error": "Email and password required"})
+
+    if len(password) < 6:
+        return jsonify({"success": False, "error": "Password must be at least 6 characters"})
+
+    try:
+        conn = get_db()
+
+        # Check if email already exists
+        existing = conn.execute('SELECT id FROM users WHERE email = ?', (email,)).fetchone()
+        if existing:
+            conn.close()
+            return jsonify({"success": False, "error": "Email already registered"})
+
+        # Create user with hashed password and token
+        password_hash = hash_password(password)
+        token = generate_token()
+
+        conn.execute('''
+            INSERT INTO users (email, password_hash, display_name, token)
+            VALUES (?, ?, ?, ?)
+        ''', (email, password_hash, display_name or email.split('@')[0], token))
+        conn.commit()
+
+        # Get the new user's ID
+        user = conn.execute('SELECT id, display_name FROM users WHERE email = ?', (email,)).fetchone()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "user_id": user['id'],
+            "display_name": user['display_name'],
+            "token": token
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Login with email and password."""
+    data = request.json
+
+    email = data.get('email', '').strip().lower()
+    password = data.get('password', '')
+
+    if not email or not password:
+        return jsonify({"success": False, "error": "Email and password required"})
+
+    try:
+        conn = get_db()
+        user = conn.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+
+        if not user or not verify_password(password, user['password_hash']):
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid email or password"})
+
+        # Generate new token on login
+        token = generate_token()
+        conn.execute('UPDATE users SET token = ? WHERE id = ?', (token, user['id']))
+        conn.commit()
+        conn.close()
+
+        return jsonify({
+            "success": True,
+            "user_id": user['id'],
+            "display_name": user['display_name'],
+            "token": token
+        })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
+# =============================================================================
+# STORY ROUTES
+# =============================================================================
+
+@app.route('/save-story', methods=['POST'])
+def save_story():
+    """Save a story to the database. Requires authentication."""
+    data = request.json
+
+    user_id = data.get('user_id')
+    token = data.get('token')
     title = data.get('title')
     story_text = data.get('story_text')
     rating = data.get('rating')
 
-    if not username or not story_text or not rating:
+    if not user_id or not token or not story_text or not rating:
         return jsonify({"success": False, "error": "Missing required fields"})
 
     try:
         conn = get_db()
+
+        # Verify token
+        user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
         conn.execute('''
-            INSERT INTO saved_stories (username, title, story_text, story_type, language, length_minutes, modifications, rating)
+            INSERT INTO saved_stories (user_id, title, story_text, story_type, language, length_minutes, modifications, rating)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ''', (
-            username,
+            user_id,
             title,
             story_text,
             data.get('story_type'),
@@ -155,17 +247,25 @@ def save_story():
 
 @app.route('/my-stories', methods=['GET'])
 def my_stories():
-    """Get all saved stories for a user."""
-    username = request.args.get('username')
+    """Get all saved stories for a user. Requires authentication."""
+    user_id = request.args.get('user_id')
+    token = request.args.get('token')
 
-    if not username:
-        return jsonify({"success": False, "error": "Username required"})
+    if not user_id or not token:
+        return jsonify({"success": False, "error": "Authentication required"})
 
     try:
         conn = get_db()
+
+        # Verify token
+        user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
         stories = conn.execute(
-            'SELECT * FROM saved_stories WHERE username = ? ORDER BY saved_at DESC',
-            (username,)
+            'SELECT * FROM saved_stories WHERE user_id = ? ORDER BY saved_at DESC',
+            (user_id,)
         ).fetchall()
         conn.close()
 
@@ -177,20 +277,29 @@ def my_stories():
 
 @app.route('/update-rating', methods=['POST'])
 def update_rating():
-    """Update the rating of a saved story."""
+    """Update the rating of a saved story. Requires authentication."""
     data = request.json
 
+    user_id = data.get('user_id')
+    token = data.get('token')
     story_id = data.get('story_id')
     new_rating = data.get('rating')
 
-    if not story_id or not new_rating:
+    if not user_id or not token or not story_id or not new_rating:
         return jsonify({"success": False, "error": "Missing required fields"})
 
     try:
         conn = get_db()
+
+        # Verify token and that story belongs to user
+        user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
         conn.execute(
-            'UPDATE saved_stories SET rating = ? WHERE id = ?',
-            (new_rating, story_id)
+            'UPDATE saved_stories SET rating = ? WHERE id = ? AND user_id = ?',
+            (new_rating, story_id, user_id)
         )
         conn.commit()
         conn.close()

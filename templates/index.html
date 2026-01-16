@@ -13,10 +13,26 @@
         <!-- Login Section -->
         <div id="loginSection" class="login-section">
             <div id="loggedOut">
-                <label for="usernameInput">Enter your name to save stories:</label>
-                <div class="login-row">
-                    <input type="text" id="usernameInput" placeholder="Your name">
-                    <button type="button" id="loginBtn">Login</button>
+                <div id="loginForm">
+                    <h3>Login</h3>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <div class="auth-buttons">
+                        <button type="button" id="loginBtn">Login</button>
+                        <button type="button" id="showRegisterBtn" class="secondary-btn">Create Account</button>
+                    </div>
+                    <p id="loginError" class="auth-error" style="display: none;"></p>
+                </div>
+                <div id="registerForm" style="display: none;">
+                    <h3>Create Account</h3>
+                    <input type="text" id="registerName" placeholder="Display Name">
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                    <input type="password" id="registerPassword" placeholder="Password (min 6 chars)" required>
+                    <div class="auth-buttons">
+                        <button type="button" id="registerBtn">Register</button>
+                        <button type="button" id="showLoginBtn" class="secondary-btn">Back to Login</button>
+                    </div>
+                    <p id="registerError" class="auth-error" style="display: none;"></p>
                 </div>
             </div>
             <div id="loggedIn" style="display: none;">
@@ -128,11 +144,17 @@
         // Login elements
         const loggedOut = document.getElementById('loggedOut');
         const loggedIn = document.getElementById('loggedIn');
-        const usernameInput = document.getElementById('usernameInput');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
         const loginBtn = document.getElementById('loginBtn');
         const logoutBtn = document.getElementById('logoutBtn');
+        const registerBtn = document.getElementById('registerBtn');
+        const showRegisterBtn = document.getElementById('showRegisterBtn');
+        const showLoginBtn = document.getElementById('showLoginBtn');
         const displayUsername = document.getElementById('displayUsername');
         const myStoriesBtn = document.getElementById('myStoriesBtn');
+        const loginError = document.getElementById('loginError');
+        const registerError = document.getElementById('registerError');
 
         // Save story elements
         const saveSection = document.getElementById('saveSection');
@@ -152,32 +174,121 @@
 
         // Check if user is already logged in
         function checkLogin() {
-            const username = localStorage.getItem('username');
-            if (username) {
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('token');
+            const displayName = localStorage.getItem('display_name');
+
+            if (userId && token) {
                 loggedOut.style.display = 'none';
                 loggedIn.style.display = 'block';
-                displayUsername.textContent = username;
+                displayUsername.textContent = displayName || 'User';
             } else {
                 loggedOut.style.display = 'block';
                 loggedIn.style.display = 'none';
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
             }
+        }
+
+        // Helper to check if logged in
+        function isLoggedIn() {
+            return localStorage.getItem('user_id') && localStorage.getItem('token');
         }
 
         // Initialize login state
         checkLogin();
 
+        // Toggle between login and register forms
+        showRegisterBtn.addEventListener('click', function() {
+            loginForm.style.display = 'none';
+            registerForm.style.display = 'block';
+            loginError.style.display = 'none';
+        });
+
+        showLoginBtn.addEventListener('click', function() {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+            registerError.style.display = 'none';
+        });
+
         // Login handler
-        loginBtn.addEventListener('click', function() {
-            const username = usernameInput.value.trim();
-            if (username) {
-                localStorage.setItem('username', username);
-                checkLogin();
+        loginBtn.addEventListener('click', async function() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                loginError.textContent = 'Please enter email and password';
+                loginError.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('user_id', result.user_id);
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('display_name', result.display_name);
+                    loginError.style.display = 'none';
+                    checkLogin();
+                } else {
+                    loginError.textContent = result.error;
+                    loginError.style.display = 'block';
+                }
+            } catch (err) {
+                loginError.textContent = 'Connection error. Please try again.';
+                loginError.style.display = 'block';
+            }
+        });
+
+        // Register handler
+        registerBtn.addEventListener('click', async function() {
+            const displayName = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+
+            if (!email || !password) {
+                registerError.textContent = 'Please enter email and password';
+                registerError.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, display_name: displayName })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    localStorage.setItem('user_id', result.user_id);
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('display_name', result.display_name);
+                    registerError.style.display = 'none';
+                    checkLogin();
+                } else {
+                    registerError.textContent = result.error;
+                    registerError.style.display = 'block';
+                }
+            } catch (err) {
+                registerError.textContent = 'Connection error. Please try again.';
+                registerError.style.display = 'block';
             }
         });
 
         // Logout handler
         logoutBtn.addEventListener('click', function() {
-            localStorage.removeItem('username');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('token');
+            localStorage.removeItem('display_name');
             checkLogin();
             saveSection.style.display = 'none';
         });
@@ -276,7 +387,7 @@
                     storyOutput.style.display = 'block';
 
                     // Show save section if logged in
-                    if (localStorage.getItem('username')) {
+                    if (isLoggedIn()) {
                         saveSection.style.display = 'block';
                         selectedRating = 0;
                         updateStarDisplay();
@@ -306,7 +417,8 @@
             }
 
             const saveData = {
-                username: localStorage.getItem('username'),
+                user_id: localStorage.getItem('user_id'),
+                token: localStorage.getItem('token'),
                 title: currentStoryData.title,
                 story_text: currentStoryData.story_text,
                 story_type: currentStoryData.story_type,
@@ -345,11 +457,12 @@
 
         // My Stories button handler
         myStoriesBtn.addEventListener('click', async function() {
-            const username = localStorage.getItem('username');
-            if (!username) return;
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('token');
+            if (!userId || !token) return;
 
             try {
-                const response = await fetch(`/my-stories?username=${encodeURIComponent(username)}`);
+                const response = await fetch(`/my-stories?user_id=${userId}&token=${encodeURIComponent(token)}`);
                 const result = await response.json();
 
                 if (result.success) {
@@ -412,7 +525,12 @@
                             const response = await fetch('/update-rating', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ story_id: storyId, rating: newRating })
+                                body: JSON.stringify({
+                                    user_id: localStorage.getItem('user_id'),
+                                    token: localStorage.getItem('token'),
+                                    story_id: storyId,
+                                    rating: newRating
+                                })
                             });
 
                             const result = await response.json();
