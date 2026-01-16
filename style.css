@@ -1,0 +1,174 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 600;
+}
+
+input[type="number"],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.radio-label:hover {
+    background-color: #f5f5f5;
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 10px;
+    width: auto;
+}
+
+.radio-label input[type="radio"]:checked + span,
+.radio-label:has(input[type="radio"]:checked) {
+    background-color: #e9ecff;
+    border-color: #667eea;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+#loading {
+    text-align: center;
+    padding: 40px;
+    color: #667eea;
+    font-size: 1.2em;
+}
+
+#storyOutput {
+    margin-top: 30px;
+}
+
+#storyText {
+    background-color: #f9f9f9;
+    padding: 25px;
+    border-radius: 5px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    color: #333;
+    border-left: 4px solid #667eea;
+    margin-bottom: 20px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+#newStoryBtn {
+    background: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+    margin-top: 20px;
+}
+
+#error {
+    background-color: #fee;
+    border: 2px solid #fcc;
+    border-radius: 5px;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.error-message {
+    color: #c33;
+    font-weight: 600;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 1.5em;
+    }
+}
