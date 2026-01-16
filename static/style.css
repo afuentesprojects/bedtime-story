@@ -162,13 +162,185 @@ textarea {
     font-family: inherit;
 }
 
+/* Login Section */
+.login-section {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 25px;
+}
+
+.login-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.login-row input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.login-row button,
+#logoutBtn,
+#myStoriesBtn {
+    padding: 10px 20px;
+    width: auto;
+    font-size: 14px;
+}
+
+#loggedIn {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+#logoutBtn {
+    background: #888;
+}
+
+#myStoriesBtn {
+    background: linear-gradient(135deg, #48c6ef 0%, #6f86d6 100%);
+}
+
+/* Star Rating */
+.rating-section {
+    margin-bottom: 15px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.star {
+    font-size: 28px;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.star.selected,
+.star.hovered {
+    color: #ffc107;
+}
+
+/* Save Section */
+#saveSection {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+#saveStoryBtn {
+    background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+#saveStoryBtn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.success-text {
+    color: #28a745;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.error-text {
+    color: #dc3545;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+/* My Stories Section */
+#myStoriesSection {
+    margin-top: 20px;
+}
+
+.saved-story {
+    background-color: #f9f9f9;
+    border-left: 4px solid #667eea;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 0 5px 5px 0;
+}
+
+.saved-story-title {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.story-meta {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.story-rating-edit {
+    display: flex;
+    gap: 2px;
+}
+
+.story-rating-edit .star {
+    font-size: 20px;
+}
+
+.story-info {
+    color: #888;
+    font-size: 14px;
+}
+
+.story-preview {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.story-full {
+    margin-top: 10px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 5px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+details summary {
+    cursor: pointer;
+    color: #667eea;
+    font-weight: 600;
+}
+
+#backToGeneratorBtn {
+    margin-top: 20px;
+}
+
 /* Mobile responsiveness */
 @media (max-width: 768px) {
     .container {
         padding: 20px;
     }
-    
+
     h1 {
         font-size: 1.5em;
+    }
+
+    .login-row {
+        flex-direction: column;
+    }
+
+    #loggedIn {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bedtime Story Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🌙 Bedtime Story Generator</h1>
+
+        <!-- Login Section -->
+        <div id="loginSection" class="login-section">
+            <div id="loggedOut">
+                <label for="usernameInput">Enter your name to save stories:</label>
+                <div class="login-row">
+                    <input type="text" id="usernameInput" placeholder="Your name">
+                    <button type="button" id="loginBtn">Login</button>
+                </div>
+            </div>
+            <div id="loggedIn" style="display: none;">
+                <span>Welcome, <strong id="displayUsername"></strong>!</span>
+                <button type="button" id="logoutBtn">Logout</button>
+                <button type="button" id="myStoriesBtn">My Stories</button>
+            </div>
+        </div>
+
+        <form id="storyForm">
+            <!-- Length Input -->
+            <div class="form-group">
+                <label for="length">Reading Time (minutes):</label>
+                <input type="number" id="length" name="length" min="1" max="30" value="5" required>
+            </div>
+
+            <!-- Story Type Selection -->
+            <div class="form-group">
+                <label>Story Type:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="story_type" value="made_up" checked>
+                        100% Made Up (Original Story)
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="story_type" value="classic">
+                        Classic Story
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="story_type" value="mixed">
+                        Classic with my own touch
+                    </label>
+                </div>
+            </div>
+
+            <!-- Modifications Input (shown only for mixed type) -->
+            <div class="form-group" id="modificationsGroup" style="display: none;">
+                <label for="modifications">Modifications to the classic story:</label>
+                <textarea id="modifications" name="modifications" rows="3" 
+                          placeholder="e.g., 'Make Little Red Riding Hood a brave astronaut instead'"></textarea>
+            </div>
+
+            <!-- Language Selection -->
+            <div class="form-group">
+                <label for="language">Language:</label>
+                <select id="language" name="language">
+                    <option value="English">English</option>
+                    <option value="Spanish">Spanish</option>
+                </select>
+            </div>
+
+            <!-- Generate Button -->
+            <button type="submit" id="generateBtn">Generate Story</button>
+        </form>
+
+        <!-- Loading Indicator -->
+        <div id="loading" style="display: none;">
+            <p>✨ Generating your bedtime story...</p>
+        </div>
+
+        <!-- Story Output -->
+        <div id="storyOutput" style="display: none;">
+            <h2 id="storyTitle"></h2>
+            <div id="storyText"></div>
+
+            <!-- Save Story Section (only visible when logged in) -->
+            <div id="saveSection" style="display: none;">
+                <div class="rating-section">
+                    <label>Rate this story:</label>
+                    <div class="star-rating" id="starRating">
+                        <span class="star" data-rating="1">&#9733;</span>
+                        <span class="star" data-rating="2">&#9733;</span>
+                        <span class="star" data-rating="3">&#9733;</span>
+                        <span class="star" data-rating="4">&#9733;</span>
+                        <span class="star" data-rating="5">&#9733;</span>
+                    </div>
+                </div>
+                <button type="button" id="saveStoryBtn">Save Story</button>
+                <p id="saveMessage" style="display: none;"></p>
+            </div>
+
+            <button id="newStoryBtn">Generate Another Story</button>
+        </div>
+
+        <!-- My Stories Section -->
+        <div id="myStoriesSection" style="display: none;">
+            <h2>My Saved Stories</h2>
+            <div id="storiesList"></div>
+            <button type="button" id="backToGeneratorBtn">Back to Generator</button>
+        </div>
+
+        <!-- Error Message -->
+        <div id="error" style="display: none;">
+            <p class="error-message"></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('storyForm');
+        const loading = document.getElementById('loading');
+        const storyOutput = document.getElementById('storyOutput');
+        const storyTitle = document.getElementById('storyTitle');
+        const storyText = document.getElementById('storyText');
+        const error = document.getElementById('error');
+        const modificationsGroup = document.getElementById('modificationsGroup');
+        const storyTypeRadios = document.querySelectorAll('input[name="story_type"]');
+        const newStoryBtn = document.getElementById('newStoryBtn');
+
+        // Login elements
+        const loggedOut = document.getElementById('loggedOut');
+        const loggedIn = document.getElementById('loggedIn');
+        const usernameInput = document.getElementById('usernameInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const displayUsername = document.getElementById('displayUsername');
+        const myStoriesBtn = document.getElementById('myStoriesBtn');
+
+        // Save story elements
+        const saveSection = document.getElementById('saveSection');
+        const starRating = document.getElementById('starRating');
+        const stars = document.querySelectorAll('.star');
+        const saveStoryBtn = document.getElementById('saveStoryBtn');
+        const saveMessage = document.getElementById('saveMessage');
+
+        // My stories elements
+        const myStoriesSection = document.getElementById('myStoriesSection');
+        const storiesList = document.getElementById('storiesList');
+        const backToGeneratorBtn = document.getElementById('backToGeneratorBtn');
+
+        // Current story data (to save later)
+        let currentStoryData = {};
+        let selectedRating = 0;
+
+        // Check if user is already logged in
+        function checkLogin() {
+            const username = localStorage.getItem('username');
+            if (username) {
+                loggedOut.style.display = 'none';
+                loggedIn.style.display = 'block';
+                displayUsername.textContent = username;
+            } else {
+                loggedOut.style.display = 'block';
+                loggedIn.style.display = 'none';
+            }
+        }
+
+        // Initialize login state
+        checkLogin();
+
+        // Login handler
+        loginBtn.addEventListener('click', function() {
+            const username = usernameInput.value.trim();
+            if (username) {
+                localStorage.setItem('username', username);
+                checkLogin();
+            }
+        });
+
+        // Logout handler
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('username');
+            checkLogin();
+            saveSection.style.display = 'none';
+        });
+
+        // Show/hide modifications field based on story type
+        storyTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'mixed') {
+                    modificationsGroup.style.display = 'block';
+                } else {
+                    modificationsGroup.style.display = 'none';
+                }
+            });
+        });
+
+        // Star rating click handler
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                updateStarDisplay();
+            });
+
+            // Hover handlers for preview effect
+            star.addEventListener('mouseenter', function() {
+                const hoverRating = parseInt(this.dataset.rating);
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.rating) <= hoverRating) {
+                        s.classList.add('hovered');
+                    } else {
+                        s.classList.remove('hovered');
+                    }
+                });
+            });
+        });
+
+        // Remove hover effect when leaving the star rating area
+        starRating.addEventListener('mouseleave', function() {
+            stars.forEach(s => s.classList.remove('hovered'));
+        });
+
+        function updateStarDisplay() {
+            stars.forEach(star => {
+                const rating = parseInt(star.dataset.rating);
+                if (rating <= selectedRating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        }
+
+        // Handle form submission
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Hide previous results and errors
+            storyOutput.style.display = 'none';
+            error.style.display = 'none';
+            loading.style.display = 'block';
+            myStoriesSection.style.display = 'none';
+
+            // Gather form data
+            const formData = {
+                length: document.getElementById('length').value,
+                story_type: document.querySelector('input[name="story_type"]:checked').value,
+                language: document.getElementById('language').value,
+                modifications: document.getElementById('modifications').value
+            };
+
+            // Store for saving later
+            currentStoryData = formData;
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+                loading.style.display = 'none';
+
+                if (result.success) {
+                    // Extract title (first line) and story body
+                    const fullStory = result.story;
+                    const lines = fullStory.split('\n');
+                    const title = lines[0].replace(/^#+\s*/, '').trim(); // Remove any markdown # symbols
+                    const storyBody = lines.slice(1).join('\n').trim();
+
+                    storyTitle.textContent = title;
+                    storyText.textContent = storyBody;
+                    currentStoryData.title = title;
+                    currentStoryData.story_text = storyBody;
+                    storyOutput.style.display = 'block';
+
+                    // Show save section if logged in
+                    if (localStorage.getItem('username')) {
+                        saveSection.style.display = 'block';
+                        selectedRating = 0;
+                        updateStarDisplay();
+                        saveMessage.style.display = 'none';
+                        saveStoryBtn.disabled = false;
+                    }
+                } else {
+                    error.querySelector('.error-message').textContent =
+                        'Error generating story: ' + result.error;
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                error.querySelector('.error-message').textContent =
+                    'Error: Could not connect to the server. ' + err.message;
+                error.style.display = 'block';
+            }
+        });
+
+        // Save story handler
+        saveStoryBtn.addEventListener('click', async function() {
+            if (selectedRating === 0) {
+                saveMessage.textContent = 'Please select a rating first!';
+                saveMessage.className = 'error-text';
+                saveMessage.style.display = 'block';
+                return;
+            }
+
+            const saveData = {
+                username: localStorage.getItem('username'),
+                title: currentStoryData.title,
+                story_text: currentStoryData.story_text,
+                story_type: currentStoryData.story_type,
+                language: currentStoryData.language,
+                length_minutes: currentStoryData.length,
+                modifications: currentStoryData.modifications,
+                rating: selectedRating
+            };
+
+            try {
+                const response = await fetch('/save-story', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(saveData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    saveMessage.textContent = 'Story saved!';
+                    saveMessage.className = 'success-text';
+                    saveStoryBtn.disabled = true;
+                } else {
+                    saveMessage.textContent = 'Error saving: ' + result.error;
+                    saveMessage.className = 'error-text';
+                }
+                saveMessage.style.display = 'block';
+            } catch (err) {
+                saveMessage.textContent = 'Error: Could not save story.';
+                saveMessage.className = 'error-text';
+                saveMessage.style.display = 'block';
+            }
+        });
+
+        // My Stories button handler
+        myStoriesBtn.addEventListener('click', async function() {
+            const username = localStorage.getItem('username');
+            if (!username) return;
+
+            try {
+                const response = await fetch(`/my-stories?username=${encodeURIComponent(username)}`);
+                const result = await response.json();
+
+                if (result.success) {
+                    displayStories(result.stories);
+                    form.style.display = 'none';
+                    storyOutput.style.display = 'none';
+                    myStoriesSection.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error fetching stories:', err);
+            }
+        });
+
+        function displayStories(stories) {
+            if (stories.length === 0) {
+                storiesList.innerHTML = '<p>No saved stories yet.</p>';
+                return;
+            }
+
+            storiesList.innerHTML = stories.map(story => `
+                <div class="saved-story" data-story-id="${story.id}">
+                    <h3 class="saved-story-title">${story.title || 'Untitled Story'}</h3>
+                    <div class="story-meta">
+                        <div class="story-rating-edit star-rating" data-story-id="${story.id}" data-current-rating="${story.rating}">
+                            ${[1,2,3,4,5].map(i => `<span class="star ${i <= story.rating ? 'selected' : ''}" data-rating="${i}">&#9733;</span>`).join('')}
+                        </div>
+                        <span class="story-info">${story.language} | ${story.length_minutes} min | ${story.story_type}</span>
+                    </div>
+                    <div class="story-preview">${story.story_text.substring(0, 200)}...</div>
+                    <details>
+                        <summary>Read full story</summary>
+                        <div class="story-full">${story.story_text}</div>
+                    </details>
+                </div>
+            `).join('');
+
+            // Add click and hover handlers for editable ratings
+            document.querySelectorAll('.story-rating-edit').forEach(ratingDiv => {
+                const storyId = ratingDiv.dataset.storyId;
+                const starsInDiv = ratingDiv.querySelectorAll('.star');
+
+                starsInDiv.forEach(star => {
+                    // Hover effect
+                    star.addEventListener('mouseenter', function() {
+                        const hoverRating = parseInt(this.dataset.rating);
+                        starsInDiv.forEach(s => {
+                            if (parseInt(s.dataset.rating) <= hoverRating) {
+                                s.classList.add('hovered');
+                            } else {
+                                s.classList.remove('hovered');
+                            }
+                        });
+                    });
+
+                    // Click to update rating
+                    star.addEventListener('click', async function() {
+                        const newRating = parseInt(this.dataset.rating);
+
+                        try {
+                            const response = await fetch('/update-rating', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ story_id: storyId, rating: newRating })
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                                // Update display
+                                starsInDiv.forEach(s => {
+                                    if (parseInt(s.dataset.rating) <= newRating) {
+                                        s.classList.add('selected');
+                                    } else {
+                                        s.classList.remove('selected');
+                                    }
+                                });
+                                ratingDiv.dataset.currentRating = newRating;
+                            }
+                        } catch (err) {
+                            console.error('Error updating rating:', err);
+                        }
+                    });
+                });
+
+                // Remove hover effect when leaving
+                ratingDiv.addEventListener('mouseleave', function() {
+                    const currentRating = parseInt(this.dataset.currentRating);
+                    starsInDiv.forEach(s => {
+                        s.classList.remove('hovered');
+                    });
+                });
+            });
+        }
+
+        // Back to generator button
+        backToGeneratorBtn.addEventListener('click', function() {
+            myStoriesSection.style.display = 'none';
+            form.style.display = 'block';
+        });
+
+        // Handle "Generate Another Story" button
+        newStoryBtn.addEventListener('click', function() {
+            storyOutput.style.display = 'none';
+            form.style.display = 'block';
+            window.scrollTo(0, 0);
+        });
+    </script>
+</body>
+</html>
