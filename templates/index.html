@@ -39,6 +39,7 @@
                 <span>Welcome, <strong id="displayUsername"></strong>!</span>
                 <button type="button" id="logoutBtn">Logout</button>
                 <button type="button" id="myStoriesBtn">My Stories</button>
+                <button type="button" id="settingsBtn">Settings</button>
             </div>
         </div>
 
@@ -124,6 +125,55 @@
             <button type="button" id="backToGeneratorBtn">Back to Generator</button>
         </div>
 
+        <!-- Settings Section -->
+        <div id="settingsSection" style="display: none;">
+            <h2>Story Settings</h2>
+            <p class="settings-description">Customize how your stories are generated.</p>
+
+            <div class="form-group">
+                <label>Story Tone (select all that apply):</label>
+                <div class="checkbox-group" id="tonesGroup">
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Funny"> Funny</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Soothing"> Soothing</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Educational"> Educational</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Fable"> Fable</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Adventure"> Adventure</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Magical"> Magical</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Other"> Other:</label>
+                    <input type="text" id="toneCustom" placeholder="Enter custom tone" style="margin-left: 10px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Favorite Topics (select all that apply):</label>
+                <div class="checkbox-group" id="topicsGroup">
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Siblings"> Siblings</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Friendship"> Friendship</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Family"> Family</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="School"> School</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Fantasy"> Fantasy</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Princess"> Princess</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Pirates"> Pirates</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Cars"> Cars</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Sports"> Sports</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Dinosaurs"> Dinosaurs</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Animals"> Animals</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Space"> Space</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Superheroes"> Superheroes</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Nature"> Nature</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="childAge">Child's Age:</label>
+                <input type="number" id="childAge" min="2" max="10" value="6">
+            </div>
+
+            <button type="button" id="saveSettingsBtn">Save Settings</button>
+            <p id="settingsMessage" style="display: none;"></p>
+            <button type="button" id="backFromSettingsBtn" class="secondary-btn">Back to Generator</button>
+        </div>
+
         <!-- Error Message -->
         <div id="error" style="display: none;">
             <p class="error-message"></p>
@@ -167,6 +217,15 @@
         const myStoriesSection = document.getElementById('myStoriesSection');
         const storiesList = document.getElementById('storiesList');
         const backToGeneratorBtn = document.getElementById('backToGeneratorBtn');
+
+        // Settings elements
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsSection = document.getElementById('settingsSection');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const settingsMessage = document.getElementById('settingsMessage');
+        const backFromSettingsBtn = document.getElementById('backFromSettingsBtn');
+        const toneCustomInput = document.getElementById('toneCustom');
+        const childAgeInput = document.getElementById('childAge');
 
         // Current story data (to save later)
         let currentStoryData = {};
@@ -355,7 +414,9 @@
                 length: document.getElementById('length').value,
                 story_type: document.querySelector('input[name="story_type"]:checked').value,
                 language: document.getElementById('language').value,
-                modifications: document.getElementById('modifications').value
+                modifications: document.getElementById('modifications').value,
+                user_id: localStorage.getItem('user_id'),
+                token: localStorage.getItem('token')
             };
 
             // Store for saving later
@@ -564,6 +625,102 @@
         // Back to generator button
         backToGeneratorBtn.addEventListener('click', function() {
             myStoriesSection.style.display = 'none';
+            form.style.display = 'block';
+        });
+
+        // Settings button handler
+        settingsBtn.addEventListener('click', async function() {
+            form.style.display = 'none';
+            storyOutput.style.display = 'none';
+            myStoriesSection.style.display = 'none';
+            settingsSection.style.display = 'block';
+            settingsMessage.style.display = 'none';
+
+            // Load existing settings
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('token');
+            if (!userId || !token) return;
+
+            try {
+                const response = await fetch(`/settings?user_id=${userId}&token=${encodeURIComponent(token)}`);
+                const result = await response.json();
+
+                if (result.success && result.settings) {
+                    // Populate tones
+                    const tones = result.settings.tones ? JSON.parse(result.settings.tones) : [];
+                    document.querySelectorAll('input[name="tone"]').forEach(cb => {
+                        cb.checked = tones.includes(cb.value);
+                    });
+                    toneCustomInput.value = result.settings.tone_custom || '';
+
+                    // Populate topics
+                    const topics = result.settings.favorite_topics ? JSON.parse(result.settings.favorite_topics) : [];
+                    document.querySelectorAll('input[name="topic"]').forEach(cb => {
+                        cb.checked = topics.includes(cb.value);
+                    });
+
+                    // Populate age
+                    childAgeInput.value = result.settings.child_age || 6;
+                }
+            } catch (err) {
+                console.error('Error loading settings:', err);
+            }
+        });
+
+        // Save settings handler
+        saveSettingsBtn.addEventListener('click', async function() {
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('token');
+            if (!userId || !token) return;
+
+            // Gather selected tones
+            const tones = [];
+            document.querySelectorAll('input[name="tone"]:checked').forEach(cb => {
+                tones.push(cb.value);
+            });
+
+            // Gather selected topics
+            const topics = [];
+            document.querySelectorAll('input[name="topic"]:checked').forEach(cb => {
+                topics.push(cb.value);
+            });
+
+            const settingsData = {
+                user_id: userId,
+                token: token,
+                tones: JSON.stringify(tones),
+                tone_custom: toneCustomInput.value.trim(),
+                favorite_topics: JSON.stringify(topics),
+                child_age: parseInt(childAgeInput.value) || 6
+            };
+
+            try {
+                const response = await fetch('/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(settingsData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    settingsMessage.textContent = 'Settings saved!';
+                    settingsMessage.className = 'success-text';
+                } else {
+                    settingsMessage.textContent = 'Error: ' + result.error;
+                    settingsMessage.className = 'error-text';
+                }
+                settingsMessage.style.display = 'block';
+            } catch (err) {
+                settingsMessage.textContent = 'Error saving settings.';
+                settingsMessage.className = 'error-text';
+                settingsMessage.style.display = 'block';
+            }
+        });
+
+        // Back from settings button
+        backFromSettingsBtn.addEventListener('click', function() {
+            settingsSection.style.display = 'none';
             form.style.display = 'block';
         });
 

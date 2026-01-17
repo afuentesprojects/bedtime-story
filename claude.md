@@ -125,6 +125,7 @@ bedtime_story_app/
 - [ ] **Play Store Preparation** - Icons, screenshots, listing
 
 ## Priority 4: Future Enhancements
+- [ ] **Password Reset (Email-based)** - Forgot password flow with email service
 - [ ] Cloud database for cross-device sync
 - [ ] Character name customization
 - [ ] Story illustrations (AI-generated)

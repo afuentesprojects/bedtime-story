@@ -53,6 +53,18 @@ def init_db():
         )
     ''')
 
+    # User settings table
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS user_settings (
+            user_id INTEGER PRIMARY KEY,
+            tones TEXT,
+            tone_custom TEXT,
+            favorite_topics TEXT,
+            child_age INTEGER DEFAULT 6,
+            FOREIGN KEY (user_id) REFERENCES users (id)
+        )
+    ''')
+
     # Migration: Add user_id column if updating from old schema
     try:
         conn.execute('ALTER TABLE saved_stories ADD COLUMN user_id INTEGER')
@@ -68,11 +80,11 @@ init_db()
 # Initialize Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def generate_story(story_type, length_minutes, language, modifications=""):
+def generate_story(story_type, length_minutes, language, modifications="", settings=None):
     """Generate a bedtime story using Groq API"""
 
     # Build prompt using config
-    prompt = build_story_prompt(story_type, length_minutes, language, modifications)
+    prompt = build_story_prompt(story_type, length_minutes, language, modifications, settings)
 
     try:
         # Call Groq API with settings from llm_config
@@ -105,7 +117,25 @@ def generate():
     language = data.get('language', 'English')
     modifications = data.get('modifications', '')
 
-    result = generate_story(story_type, length, language, modifications)
+    # Fetch user settings if logged in
+    user_settings = None
+    user_id = data.get('user_id')
+    token = data.get('token')
+
+    if user_id and token:
+        try:
+            conn = get_db()
+            # Verify token
+            user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+            if user:
+                settings_row = conn.execute('SELECT * FROM user_settings WHERE user_id = ?', (user_id,)).fetchone()
+                if settings_row:
+                    user_settings = dict(settings_row)
+            conn.close()
+        except Exception:
+            pass  # Continue without settings if there's an error
+
+    result = generate_story(story_type, length, language, modifications, user_settings)
     return jsonify(result)
 
 
@@ -274,6 +304,97 @@ def my_stories():
         return jsonify({"success": True, "stories": stories_list})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
+
+# =============================================================================
+# SETTINGS ROUTES
+# =============================================================================
+
+@app.route('/settings', methods=['GET'])
+def get_settings():
+    """Get user settings. Requires authentication."""
+    user_id = request.args.get('user_id')
+    token = request.args.get('token')
+
+    if not user_id or not token:
+        return jsonify({"success": False, "error": "Authentication required"})
+
+    try:
+        conn = get_db()
+
+        # Verify token
+        user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
+        settings = conn.execute('SELECT * FROM user_settings WHERE user_id = ?', (user_id,)).fetchone()
+        conn.close()
+
+        if settings:
+            return jsonify({
+                "success": True,
+                "settings": {
+                    "tones": settings['tones'],
+                    "tone_custom": settings['tone_custom'],
+                    "favorite_topics": settings['favorite_topics'],
+                    "child_age": settings['child_age']
+                }
+            })
+        else:
+            # Return defaults if no settings saved yet
+            return jsonify({
+                "success": True,
+                "settings": {
+                    "tones": None,
+                    "tone_custom": None,
+                    "favorite_topics": None,
+                    "child_age": 6
+                }
+            })
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+
+@app.route('/settings', methods=['POST'])
+def save_settings():
+    """Save user settings. Requires authentication."""
+    data = request.json
+
+    user_id = data.get('user_id')
+    token = data.get('token')
+
+    if not user_id or not token:
+        return jsonify({"success": False, "error": "Authentication required"})
+
+    try:
+        conn = get_db()
+
+        # Verify token
+        user = conn.execute('SELECT id FROM users WHERE id = ? AND token = ?', (user_id, token)).fetchone()
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
+        # Use INSERT OR REPLACE to handle both new and existing settings
+        conn.execute('''
+            INSERT OR REPLACE INTO user_settings (user_id, tones, tone_custom, favorite_topics, child_age)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (
+            user_id,
+            data.get('tones'),
+            data.get('tone_custom'),
+            data.get('favorite_topics'),
+            data.get('child_age', 6)
+        ))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 
 @app.route('/update-rating', methods=['POST'])
 def update_rating():
