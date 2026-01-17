@@ -17,6 +17,7 @@ We are transitioning from a Flask web app to a **Native Android App** built with
 - **Mobile Frontend:** Kotlin, Android SDK (Native Android)
 - **Web Frontend:** HTML, CSS, Vanilla JavaScript (maintained for web access)
 - **AI:** Groq API with Llama 3.3 70B model
+- **Translation:** Google AI Studio (Gemini 2.0 Flash)
 - **Database:** SQLite (local) → will need cloud DB for cross-device sync
 - **Environment:** python-dotenv for API key management
 
@@ -25,12 +26,13 @@ We are transitioning from a Flask web app to a **Native Android App** built with
 bedtime_story_app/
 ├── app.py              # Flask backend with API routes
 ├── auth.py             # Authentication utilities (password hashing, tokens)
-├── llm_config.py       # LLM settings and prompt templates
+├── llm_config.py       # LLM settings and prompt templates (English only)
+├── translation.py      # Translation using Google Gemini API
 ├── templates/
 │   └── index.html      # Web frontend interface
 ├── static/
 │   └── style.css       # Web styling
-├── .env                # API keys (gitignored, not to be modified)
+├── .env                # API keys (GROQ_API_KEY, GOOGLE_API_KEY)
 ├── requirements.txt    # Python dependencies
 └── venv/               # Virtual environment
 ```
@@ -63,7 +65,7 @@ bedtime_story_app/
    - Made Up: Original stories
    - Classic: Traditional tales
    - Mixed: Classic with user modifications
-3. **Languages:** English, Spanish
+3. **Languages:** English, Spanish, French, Portuguese, German, Italian (via translation)
 4. **Output:** Plain text stories
 
 ## Development Guidelines
@@ -81,8 +83,10 @@ bedtime_story_app/
 - Simple, functional UI (not overly styled)
 
 ### API Usage
-- Groq API key stored in .env file
-- Model: `llama-3.3-70b-versatile`
+- Groq API key stored in .env file (GROQ_API_KEY)
+- Google API key stored in .env file (GOOGLE_API_KEY) - for translation
+- Story generation model: `llama-3.3-70b-versatile` (Groq)
+- Translation model: `gemini-2.0-flash` (Google AI Studio)
 - Temperature: 0.7 for creative stories
 - Max tokens: 2048
 
@@ -94,7 +98,6 @@ bedtime_story_app/
 
 ## Current Limitations
 - Stories saved locally only (no cloud sync)
-- No personalization settings
 
 ---
 
@@ -103,13 +106,25 @@ bedtime_story_app/
 ## Priority 1: Backend Refactoring (Required before Android)
 - [x] **Separate LLM configuration** - Extract prompts and LLM settings into `llm_config.py` ✓ DONE
 - [x] **User Authentication** - Email/password auth with secure password hashing ✓ DONE
+- [ ] **Split app.py into modules** - Separate concerns into individual files:
+  - `db.py` - Database setup, connection helper, init_db()
+  - `routes/auth.py` - Authentication routes (register, login)
+  - `routes/stories.py` - Story routes (generate, save, my-stories, update-rating)
+  - `routes/settings.py` - Settings routes (get/save settings)
+  - `app.py` - Main Flask app setup, imports routes
 
 ## Priority 2: Core Features
-- [ ] **Settings Page** - User customizations including:
+- [x] **Settings Page** - User customizations including:
   - Default story duration
   - Child age (affects vocabulary and themes)
   - Story tone options: Funny, Soothing, Educational, Christian, Adventure, etc.
   - Preferred language
+- [x] **Language via Translation API** - ✓ DONE (January 2026)
+  - Stories always generated in English (simpler prompts, better quality)
+  - Language preference moved to Settings page
+  - Translation via Google AI Studio (Gemini 2.0 Flash)
+  - Supports: English, Spanish, French, Portuguese, German, Italian
+- [ ] **UI Polish** - Improve overall aesthetics of the web interface
 - [ ] **Classic Tales Catalog** - JSON database of traditional stories:
   - Grimm's fairy tales
   - Aesop's fables
@@ -137,7 +152,8 @@ bedtime_story_app/
 
 ## Testing
 - Manual testing in browser
-- Test both English and Spanish generation
+- Test story generation (always in English first)
+- Test translation to different languages
 - Test all three story types
 - Verify mobile responsiveness
 
@@ -164,6 +180,6 @@ python app.py
 7. Finally, add a review section to the todo.md file with a summary of the changes you made and any other relevant information.
 8. DO NOT BE LAZY. NEVER BE LAZY. IF THERE IS A BUG FIND THE ROOT CAUSE AND FIX IT. NO TEMPORARY FIXES. YOU ARE A SENIOR DEVELOPER. NEVER BE LAZY
 9. MAKE ALL FIXES AND CODE CHANGES AS SIMPLE AS HUMANLY POSSIBLE. THEY SHOULD ONLY IMPACT NECESSARY CODE RELEVANT TO THE TASK AND NOTHING ELSE. IT SHOULD IMPACT AS LITTLE CODE AS POSSIBLE. YOUR GOAL IS TO NOT INTRODUCE ANY BUGS. IT'S ALL ABOUT SIMPLICITY
-10. This is a prototype/MVP - prioritize functionality over perfection
+10. This is is not a prototype, although it is a simple app - prioritize functionality over perfection
 11. Maintain the simple architecture unless explicitly asked to scale up
 12. Always test that changes work with the Groq API integration

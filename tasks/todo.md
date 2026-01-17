@@ -1,71 +1,122 @@
-# Task: Settings Page
+# Task: Language via Translation API (Google AI Studio)
 
 ## Goal
-Add a Settings page where users can save their preferences (tone, favorite topics, child age). These settings are stored in the database and used to personalize story generation.
+Instead of having the LLM generate stories in different languages (which adds complexity to prompts and may affect story quality), we will:
+1. Always generate stories in English
+2. Translate to the user's preferred language using Google AI Studio (Gemini)
+3. Move language preference to Settings (not per-story selection)
 
-## Settings to Add
-1. **Tone** (multiple choice): Funny, Soothing, Educational, Fable, Adventure, Magical, Other (custom input)
-2. **Favorite Topics** (multiple choice): Siblings, Friendship, Family, School, Fantasy, Princess, Pirates, Cars, Sports, Dinosaurs, Animals, Space, Superheroes, Nature
-3. **Child Age**: Number input (2-10 years)
+## Benefits
+- Simpler LLM prompts (always English)
+- Consistent story quality (English is best-supported)
+- Easier to add more languages in the future
+- User sets language once in Settings
+
+## Current State
+- Language dropdown on main story form (English/Spanish)
+- LLM prompts branch based on language (different instructions for Spanish)
+- Language saved per-story in database
 
 ## Implementation Plan
 
-### Step 1: Database - Add `user_settings` table
-- [x] Add new table in `app.py` `init_db()` function
-- Fields: `user_id`, `tones`, `tone_custom`, `favorite_topics` (JSON), `child_age`
-- One row per user (created when they first save settings)
+### Step 1: Add Google AI Studio API setup
+- [x] Add `google-generativeai` package to requirements.txt
+- [x] Add `GOOGLE_API_KEY` to `.env` (user will add their key)
+- [x] Create `translation.py` module with translate function using Gemini
 
-### Step 2: Backend - Add settings endpoints
-- [x] Add `GET /settings` endpoint - returns user's current settings
-- [x] Add `POST /settings` endpoint - saves user's settings
+### Step 2: Add language preference to Settings
+- [x] Add `preferred_language` field to `user_settings` table in database
+- [x] Update `GET /settings` to return language preference
+- [x] Update `POST /settings` to save language preference
+- [x] Add language dropdown to Settings UI (English, Spanish, French, etc.)
 
-### Step 3: Update LLM prompts to use settings
-- [x] Modify `build_story_prompt()` in `llm_config.py` to accept settings
-- [x] Update `/generate` endpoint to fetch user settings and pass to prompt builder
-- [x] Incorporate tone, topics, and age into the prompt
+### Step 3: Simplify LLM prompts (English only)
+- [x] Remove `LANGUAGE_INSTRUCTIONS` dictionary from `llm_config.py`
+- [x] Remove `TITLE_INSTRUCTIONS` dictionary (use English only)
+- [x] Remove language branching from `build_story_prompt()`
+- [x] Remove language branching from `_build_personalization()` and `_build_age_only()`
+- [x] Remove `language` parameter from `build_story_prompt()` signature
 
-### Step 4: Frontend - Add Settings UI
-- [x] Add "Settings" button next to "My Stories" in the logged-in header
-- [x] Create settings section/form with:
-  - Tone checkboxes + "Other" text input
-  - Favorite topics checkboxes
-  - Child age number input
-- [x] Add save button with success/error feedback
-- [x] Load existing settings when opening
+### Step 4: Update story generation flow
+- [x] Update `/generate` endpoint to:
+  1. Generate story in English (no language param)
+  2. Fetch user's preferred language from settings
+  3. If not English, call translation API
+  4. Return translated story
+- [x] Keep `language` field in saved_stories table (stores final language)
 
-### Step 5: Test the feature
-- [ ] Test saving/loading settings
-- [ ] Test story generation with different settings combinations
-- [ ] Verify settings affect the generated story content
+### Step 5: Update Frontend
+- [x] Remove language dropdown from main story form
+- [x] Update Settings section with language dropdown
+- [x] Update "My Stories" display to show translated language
+
+### Step 6: Test the feature
+- [x] Verify app starts without errors
+- [ ] Test story generation in English (default)
+- [ ] Test translation to Spanish (with GOOGLE_API_KEY)
+- [ ] Verify settings save/load language preference
 
 ---
 
 ## Technical Notes
 
-### Tone Options
-- Funny, Soothing, Educational, Fable, Adventure, Magical
-- "Other" allows custom text input
+### Google AI Studio (Gemini) Setup
+```python
+import google.generativeai as genai
 
-### Topic Options
-- Siblings, Friendship, Family, School, Fantasy, Princess, Pirates, Cars, Sports, Dinosaurs, Animals, Space, Superheroes, Nature
+genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+model = genai.GenerativeModel('gemini-1.5-flash')
 
-### How Settings Affect Stories
-The `build_story_prompt()` function will add instructions like:
-- "Write in a [tone] tone"
-- "Include themes about: [topics]"
-- "The story should be appropriate for a [age]-year-old child"
+def translate_text(text, target_language):
+    if target_language == "English":
+        return text
 
-### Database Schema
-```sql
-CREATE TABLE user_settings (
-    user_id INTEGER PRIMARY KEY,
-    tone TEXT DEFAULT 'Soothing',
-    tone_custom TEXT,
-    favorite_topics TEXT,  -- JSON array like '["Dinosaurs","Space"]'
-    child_age INTEGER DEFAULT 6,
-    FOREIGN KEY (user_id) REFERENCES users (id)
-)
+    prompt = f"Translate the following children's bedtime story to {target_language}. Keep the same tone and style. Only return the translated text, nothing else.\n\n{text}"
+    response = model.generate_content(prompt)
+    return response.text
 ```
+
+### Languages to Support
+- English (default, no translation needed)
+- Spanish
+- French
+- Portuguese
+- German
+- Italian
+
+### Database Change
+```sql
+ALTER TABLE user_settings ADD COLUMN preferred_language TEXT DEFAULT 'English';
+```
+
+### Flow Diagram
+```
+User clicks "Generate Story"
+    ↓
+Backend generates story in English (simplified prompts)
+    ↓
+Fetch user's preferred_language from settings
+    ↓
+If preferred_language != "English":
+    Call Google AI Studio to translate
+    ↓
+Return story (original English or translated)
+    ↓
+Save to database with final language
+```
+
+---
+
+## Files Modified
+
+| File | Change |
+|------|--------|
+| `requirements.txt` | Added `google-generativeai==0.8.0` |
+| `translation.py` | NEW - Translation function using Gemini 1.5 Flash |
+| `llm_config.py` | Removed all language branching, simplified to English-only prompts |
+| `app.py` | Added language to settings schema, updated /generate to translate |
+| `templates/index.html` | Removed language from form, added to Settings page |
+| `static/style.css` | Added styling for language dropdown |
 
 ---
 
@@ -73,58 +124,47 @@ CREATE TABLE user_settings (
 
 ### What Changed
 
-**1. Database (`app.py` - `init_db()`):**
-Added a new `user_settings` table to store user preferences:
-- `user_id` - Links to the user
-- `tones` - JSON array of selected tones (e.g., `["Funny", "Adventure"]`)
-- `tone_custom` - Custom tone text if "Other" is selected
-- `favorite_topics` - JSON array of topics (e.g., `["Dinosaurs", "Space"]`)
-- `child_age` - The child's age (2-10)
+**1. New Translation Module (`translation.py`):**
+- Created a new file that uses Google AI Studio (Gemini 1.5 Flash) for translation
+- `translate_story(story_text, target_language)` function handles translation
+- Returns original text if language is English or if API key is missing
+- Gracefully handles errors (returns original story if translation fails)
 
-**2. Backend API (`app.py`):**
-Added two new endpoints:
-- `GET /settings` - Fetches user's saved settings
-- `POST /settings` - Saves user's settings (uses INSERT OR REPLACE so it works for both new and existing settings)
+**2. Simplified LLM Prompts (`llm_config.py`):**
+- Removed `LANGUAGE_INSTRUCTIONS` and `TITLE_INSTRUCTIONS` dictionaries
+- Removed `language` parameter from `build_story_prompt()` function
+- Removed all Spanish/language branching from helper functions
+- Prompts are now ~50% shorter and simpler (English only)
 
-**3. LLM Integration (`llm_config.py`):**
-- Added `settings` parameter to `build_story_prompt()`
-- Created `_build_personalization()` helper that converts settings into prompt instructions
-- The prompt now includes phrases like "The tone should be: Funny, Adventure" and "Include themes about: Dinosaurs, Space" and "appropriate for a 5-year-old"
+**3. Database & Settings (`app.py`):**
+- Added `preferred_language` column to `user_settings` table
+- Added migration to handle existing databases
+- Updated GET/POST `/settings` endpoints to handle language
+- Updated `/generate` to translate stories after generation
+- Added `/languages` endpoint to get supported languages
 
-**4. Story Generation (`app.py` - `/generate`):**
-- Updated to fetch user settings from the database when logged in
-- Passes settings to `build_story_prompt()` so stories are personalized
+**4. Frontend (`index.html`):**
+- Removed language dropdown from story generation form
+- Added language dropdown in Settings page (6 languages)
+- Updated JavaScript to save/load language preference
+- Story language now comes from API response, not form input
 
-**5. Frontend (`index.html`):**
-- Added "Settings" button in the header (next to "My Stories")
-- Created Settings section with:
-  - Checkboxes for tones (Funny, Soothing, Educational, Fable, Adventure, Magical, Other)
-  - Text input for custom tone
-  - Checkboxes for topics (14 options including Siblings, Dinosaurs, Space, etc.)
-  - Number input for child's age (2-10)
-- Settings are loaded when opening the page
-- Save button with success/error feedback
-- Story generation now includes user_id/token to fetch settings
+### How It Works Now
 
-**6. Styling (`style.css`):**
-- Added styles for checkbox groups
-- Added Settings button styling
-- Made checkboxes highlight when selected
+1. User sets their preferred language in Settings (one-time)
+2. When generating a story:
+   - Backend always generates in English (simpler, higher quality)
+   - If user's language is not English, translates using Google Gemini
+   - Returns the translated story with language indicator
+3. Saved stories show the final language they were translated to
 
-### How It Works
+### To Enable Translation
 
-1. User clicks "Settings" button
-2. Their existing settings (if any) are loaded from the database
-3. User selects tones, topics, and enters child age
-4. User clicks "Save Settings"
-5. When generating a story, the backend fetches their settings
-6. The LLM prompt includes personalization instructions based on settings
-7. The generated story reflects their preferences
+Add your Google AI Studio API key to `.env`:
+```
+GOOGLE_API_KEY=your-api-key-here
+```
 
-### Files Changed
-| File | Change |
-|------|--------|
-| `app.py` | Added `user_settings` table + GET/POST `/settings` endpoints + updated `/generate` |
-| `llm_config.py` | Added `settings` param and `_build_personalization()` function |
-| `templates/index.html` | Added Settings UI + JavaScript handlers |
-| `static/style.css` | Added checkbox group and settings styling |
+Get a free key from: https://aistudio.google.com/
+
+Without the key, stories will be generated in English only (no translation).

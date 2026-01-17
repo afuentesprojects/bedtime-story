@@ -72,17 +72,8 @@
             <!-- Modifications Input (shown only for mixed type) -->
             <div class="form-group" id="modificationsGroup" style="display: none;">
                 <label for="modifications">Modifications to the classic story:</label>
-                <textarea id="modifications" name="modifications" rows="3" 
+                <textarea id="modifications" name="modifications" rows="3"
                           placeholder="e.g., 'Make Little Red Riding Hood a brave astronaut instead'"></textarea>
-            </div>
-
-            <!-- Language Selection -->
-            <div class="form-group">
-                <label for="language">Language:</label>
-                <select id="language" name="language">
-                    <option value="English">English</option>
-                    <option value="Spanish">Spanish</option>
-                </select>
             </div>
 
             <!-- Generate Button -->
@@ -127,51 +118,90 @@
 
         <!-- Settings Section -->
         <div id="settingsSection" style="display: none;">
-            <h2>Story Settings</h2>
-            <p class="settings-description">Customize how your stories are generated.</p>
+            <h2>⚙️ Story Settings</h2>
+            <p class="settings-description">Customize how your stories are generated. These preferences will be used every time you create a new story.</p>
 
-            <div class="form-group">
-                <label>Story Tone (select all that apply):</label>
-                <div class="checkbox-group" id="tonesGroup">
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Funny"> Funny</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Soothing"> Soothing</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Educational"> Educational</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Fable"> Fable</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Adventure"> Adventure</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Magical"> Magical</label>
+            <!-- Child's Age Card -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <span class="settings-icon">👶</span>
+                    <h3>Child's Age</h3>
+                </div>
+                <p class="settings-card-description">Stories will be tailored to this age level (vocabulary, themes, length).</p>
+                <div class="age-input-wrapper">
+                    <button type="button" class="age-btn" id="ageDown">−</button>
+                    <input type="number" id="childAge" min="2" max="10" value="6" readonly>
+                    <button type="button" class="age-btn" id="ageUp">+</button>
+                    <span class="age-label">years old</span>
+                </div>
+            </div>
+
+            <!-- Story Tone Card -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <span class="settings-icon">🎭</span>
+                    <h3>Story Tone</h3>
+                </div>
+                <p class="settings-card-description">Select the mood and style for your stories (pick as many as you like).</p>
+                <div class="checkbox-grid" id="tonesGroup">
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Funny"> 😄 Funny</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Soothing"> 😌 Soothing</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Educational"> 📚 Educational</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Fable"> 🦊 Fable</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Adventure"> ⚔️ Adventure</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Magical"> ✨ Magical</label>
+                </div>
+                <div class="custom-tone-wrapper">
                     <label class="checkbox-label"><input type="checkbox" name="tone" value="Other"> Other:</label>
-                    <input type="text" id="toneCustom" placeholder="Enter custom tone" style="margin-left: 10px;">
+                    <input type="text" id="toneCustom" placeholder="e.g., Silly, Inspirational...">
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Favorite Topics (select all that apply):</label>
-                <div class="checkbox-group" id="topicsGroup">
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Siblings"> Siblings</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Friendship"> Friendship</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Family"> Family</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="School"> School</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Fantasy"> Fantasy</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Princess"> Princess</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Pirates"> Pirates</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Cars"> Cars</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Sports"> Sports</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Dinosaurs"> Dinosaurs</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Animals"> Animals</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Space"> Space</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Superheroes"> Superheroes</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Nature"> Nature</label>
+            <!-- Favorite Topics Card -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <span class="settings-icon">💭</span>
+                    <h3>Favorite Topics</h3>
+                </div>
+                <p class="settings-card-description">What does your child love? Stories will feature these themes.</p>
+                <div class="checkbox-grid topics-grid" id="topicsGroup">
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Animals"> 🐾 Animals</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Dinosaurs"> 🦕 Dinosaurs</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Space"> 🚀 Space</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Princess"> 👑 Princess</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Pirates"> 🏴‍☠️ Pirates</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Superheroes"> 🦸 Superheroes</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Fantasy"> 🧙 Fantasy</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Nature"> 🌳 Nature</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Cars"> 🚗 Cars</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Sports"> ⚽ Sports</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Family"> 👨‍👩‍👧 Family</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Friendship"> 🤝 Friendship</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="School"> 🏫 School</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Siblings"> 👫 Siblings</label>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="childAge">Child's Age:</label>
-                <input type="number" id="childAge" min="2" max="10" value="6">
+            <!-- Language Card -->
+            <div class="settings-card">
+                <div class="settings-card-header">
+                    <span class="settings-icon">🌍</span>
+                    <h3>Story Language</h3>
+                </div>
+                <p class="settings-card-description">Stories will be translated to your preferred language.</p>
+                <select id="preferredLanguage" class="language-select">
+                    <option value="English">English</option>
+                    <option value="Spanish">Spanish</option>
+                    <option value="French">French</option>
+                    <option value="Portuguese">Portuguese</option>
+                    <option value="German">German</option>
+                    <option value="Italian">Italian</option>
+                </select>
             </div>
 
-            <button type="button" id="saveSettingsBtn">Save Settings</button>
+            <button type="button" id="saveSettingsBtn">💾 Save Settings</button>
             <p id="settingsMessage" style="display: none;"></p>
-            <button type="button" id="backFromSettingsBtn" class="secondary-btn">Back to Generator</button>
+            <button type="button" id="backFromSettingsBtn" class="secondary-btn">← Back to Generator</button>
         </div>
 
         <!-- Error Message -->
@@ -409,11 +439,10 @@
             loading.style.display = 'block';
             myStoriesSection.style.display = 'none';
 
-            // Gather form data
+            // Gather form data (language comes from user settings, not form)
             const formData = {
                 length: document.getElementById('length').value,
                 story_type: document.querySelector('input[name="story_type"]:checked').value,
-                language: document.getElementById('language').value,
                 modifications: document.getElementById('modifications').value,
                 user_id: localStorage.getItem('user_id'),
                 token: localStorage.getItem('token')
@@ -445,6 +474,7 @@
                     storyText.textContent = storyBody;
                     currentStoryData.title = title;
                     currentStoryData.story_text = storyBody;
+                    currentStoryData.language = result.language || 'English'; // Get language from API response
                     storyOutput.style.display = 'block';
 
                     // Show save section if logged in
@@ -630,6 +660,8 @@
 
         // Settings button handler
         settingsBtn.addEventListener('click', async function() {
+            // Hide everything else - make settings a full "page"
+            document.getElementById('loginSection').style.display = 'none';
             form.style.display = 'none';
             storyOutput.style.display = 'none';
             myStoriesSection.style.display = 'none';
@@ -661,6 +693,9 @@
 
                     // Populate age
                     childAgeInput.value = result.settings.child_age || 6;
+
+                    // Populate language
+                    document.getElementById('preferredLanguage').value = result.settings.preferred_language || 'English';
                 }
             } catch (err) {
                 console.error('Error loading settings:', err);
@@ -691,7 +726,8 @@
                 tones: JSON.stringify(tones),
                 tone_custom: toneCustomInput.value.trim(),
                 favorite_topics: JSON.stringify(topics),
-                child_age: parseInt(childAgeInput.value) || 6
+                child_age: parseInt(childAgeInput.value) || 6,
+                preferred_language: document.getElementById('preferredLanguage').value
             };
 
             try {
@@ -721,7 +757,21 @@
         // Back from settings button
         backFromSettingsBtn.addEventListener('click', function() {
             settingsSection.style.display = 'none';
+            document.getElementById('loginSection').style.display = 'block';
             form.style.display = 'block';
+        });
+
+        // Age +/- buttons
+        document.getElementById('ageUp').addEventListener('click', function() {
+            const ageInput = document.getElementById('childAge');
+            const current = parseInt(ageInput.value) || 6;
+            if (current < 10) ageInput.value = current + 1;
+        });
+
+        document.getElementById('ageDown').addEventListener('click', function() {
+            const ageInput = document.getElementById('childAge');
+            const current = parseInt(ageInput.value) || 6;
+            if (current > 2) ageInput.value = current - 1;
         });
 
         // Handle "Generate Another Story" button

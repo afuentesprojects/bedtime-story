@@ -5,6 +5,7 @@ from groq import Groq
 from dotenv import load_dotenv
 from llm_config import MODEL_NAME, TEMPERATURE, MAX_TOKENS, SYSTEM_PROMPT, build_story_prompt
 from auth import hash_password, verify_password, generate_token
+from translation import translate_story, SUPPORTED_LANGUAGES
 
 # Load environment variables from .env file
 load_dotenv()
@@ -61,9 +62,16 @@ def init_db():
             tone_custom TEXT,
             favorite_topics TEXT,
             child_age INTEGER DEFAULT 6,
+            preferred_language TEXT DEFAULT 'English',
             FOREIGN KEY (user_id) REFERENCES users (id)
         )
     ''')
+
+    # Migration: Add preferred_language column if updating from old schema
+    try:
+        conn.execute("ALTER TABLE user_settings ADD COLUMN preferred_language TEXT DEFAULT 'English'")
+    except sqlite3.OperationalError:
+        pass  # Column already exists
 
     # Migration: Add user_id column if updating from old schema
     try:
@@ -80,11 +88,11 @@ init_db()
 # Initialize Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def generate_story(story_type, length_minutes, language, modifications="", settings=None):
-    """Generate a bedtime story using Groq API"""
+def generate_story(story_type, length_minutes, modifications="", settings=None):
+    """Generate a bedtime story using Groq API (always in English)"""
 
-    # Build prompt using config
-    prompt = build_story_prompt(story_type, length_minutes, language, modifications, settings)
+    # Build prompt using config (always English)
+    prompt = build_story_prompt(story_type, length_minutes, modifications, settings)
 
     try:
         # Call Groq API with settings from llm_config
@@ -114,11 +122,11 @@ def generate():
 
     story_type = data.get('story_type')
     length = int(data.get('length', 5))
-    language = data.get('language', 'English')
     modifications = data.get('modifications', '')
 
     # Fetch user settings if logged in
     user_settings = None
+    preferred_language = "English"  # Default for non-logged-in users
     user_id = data.get('user_id')
     token = data.get('token')
 
@@ -131,11 +139,22 @@ def generate():
                 settings_row = conn.execute('SELECT * FROM user_settings WHERE user_id = ?', (user_id,)).fetchone()
                 if settings_row:
                     user_settings = dict(settings_row)
+                    preferred_language = user_settings.get('preferred_language') or 'English'
             conn.close()
         except Exception:
             pass  # Continue without settings if there's an error
 
-    result = generate_story(story_type, length, language, modifications, user_settings)
+    # Generate story in English
+    result = generate_story(story_type, length, modifications, user_settings)
+
+    # Translate if needed
+    if result.get('success') and preferred_language != "English":
+        translated = translate_story(result['story'], preferred_language)
+        result['story'] = translated
+        result['language'] = preferred_language
+    else:
+        result['language'] = "English"
+
     return jsonify(result)
 
 
@@ -337,7 +356,8 @@ def get_settings():
                     "tones": settings['tones'],
                     "tone_custom": settings['tone_custom'],
                     "favorite_topics": settings['favorite_topics'],
-                    "child_age": settings['child_age']
+                    "child_age": settings['child_age'],
+                    "preferred_language": settings['preferred_language'] or 'English'
                 }
             })
         else:
@@ -348,7 +368,8 @@ def get_settings():
                     "tones": None,
                     "tone_custom": None,
                     "favorite_topics": None,
-                    "child_age": 6
+                    "child_age": 6,
+                    "preferred_language": "English"
                 }
             })
 
@@ -378,14 +399,15 @@ def save_settings():
 
         # Use INSERT OR REPLACE to handle both new and existing settings
         conn.execute('''
-            INSERT OR REPLACE INTO user_settings (user_id, tones, tone_custom, favorite_topics, child_age)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT OR REPLACE INTO user_settings (user_id, tones, tone_custom, favorite_topics, child_age, preferred_language)
+            VALUES (?, ?, ?, ?, ?, ?)
         ''', (
             user_id,
             data.get('tones'),
             data.get('tone_custom'),
             data.get('favorite_topics'),
-            data.get('child_age', 6)
+            data.get('child_age', 6),
+            data.get('preferred_language', 'English')
         ))
         conn.commit()
         conn.close()
@@ -428,11 +450,21 @@ def update_rating():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+@app.route('/languages', methods=['GET'])
+def get_languages():
+    """Get list of supported languages for translation."""
+    return jsonify({"success": True, "languages": SUPPORTED_LANGUAGES})
+
+
 if __name__ == '__main__':
-    # Check if API key is set
+    # Check if API keys are set
     if not os.environ.get("GROQ_API_KEY"):
-        print("⚠️  WARNING: GROQ_API_KEY environment variable not set!")
+        print("WARNING: GROQ_API_KEY environment variable not set!")
         print("Get your free API key from: https://console.groq.com/")
-        print("Set it with: export GROQ_API_KEY='your-key-here'")
+
+    if not os.environ.get("GOOGLE_API_KEY"):
+        print("WARNING: GOOGLE_API_KEY environment variable not set!")
+        print("Translation to other languages will not work.")
+        print("Get your API key from: https://aistudio.google.com/")
     
     app.run(debug=True, port=5000)
