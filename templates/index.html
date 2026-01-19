@@ -925,26 +925,6 @@
         // CORE FUNCTIONS
         // =============================================================================
 
-        // Load classic tales
-        async function loadClassicTales() {
-            try {
-                const response = await fetch('/classic-tales');
-                const result = await response.json();
-                
-                if (result.success) {
-                    classicTaleSelect.innerHTML = result.tales.map(tale => 
-                        `<option value="${tale.id}">${tale.title}</option>`
-                    ).join('');
-                } else {
-                    classicTaleSelect.innerHTML = '<option value="">Error loading tales</option>';
-                }
-            } catch (err) {
-                classicTaleSelect.innerHTML = '<option value="">Error loading tales</option>';
-            }
-        }
-
-        // Load tales on page load
-        loadClassicTales();
 
 
         // Star rating click handler

@@ -25,3 +25,6 @@ instance/
 # Logs
 *.log
 
+# Others
+DEVELOP.md
+tasks/todo-old.md

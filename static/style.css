@@ -774,11 +774,13 @@ details summary {
 
 /* Story Length Section */
 .length-section {
-    margin-bottom: 30px;
-    padding: 20px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
     background: linear-gradient(135deg, #f5f7ff 0%, #e9ecff 100%);
-    border-radius: 12px;
+    border-radius: 8px;
     border: 1px solid #e1e6ff;
+    display: inline-block;
+    min-width: 300px;
 }
 
 .length-section label {

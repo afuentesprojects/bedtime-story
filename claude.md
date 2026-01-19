@@ -1,161 +1,348 @@
 # Bedtime Story Generator - Project Context
 
 ## Project Overview
-A **native Android mobile application** (with web support) that generates AI-powered bedtime stories for children ages 4-8 using the Groq API (Llama models). Users can customize story length, type, language, and tone.
+A **cross-platform mobile application** that generates AI-powered bedtime stories for children ages 2-10 using the Groq API (Llama models). Users can customize story length, type, language, and tone. The app targets both Google Play Store and Apple App Store from a single codebase.
+
+## Target Audience
+Parents of children ages 2-10 who want personalized, engaging bedtime stories.
+
+## Business Model
+- **Launch:** Free app with full functionality
+- **Future:** Subscription model (when usage justifies it)
+- **Web:** Desirable but not essential (can be added later via Expo Web)
+
+---
 
 ## Architecture Decision
-**Decision Date:** January 2026
+**Decision Date:** January 2026 (Revised)**
 
-We are transitioning from a Flask web app to a **Native Android App** built with Kotlin, while maintaining the Python/Flask backend as an API server. This gives us:
-- Full Play Store distribution
-- Best native Android experience
-- Access to all Android features
-- Separate optimized frontends for mobile and web
+We are building a **Cross-Platform Mobile App** using **React Native + Expo**, with a **Python/Flask backend** deployed to the cloud. This approach was chosen because:
+
+- ✅ **One codebase** → Android + iOS deployment
+- ✅ **Sustainable** for a solo founder (no duplicate maintenance)
+- ✅ **Faster time to market** than native development
+- ✅ **JavaScript-based** (leverages existing web development knowledge)
+- ✅ **Expo simplifies** builds, testing, and store submission
+- ✅ **Future web support** available via Expo Web
+
+### What We're NOT Doing
+- ❌ Native Android (Kotlin) — would require separate iOS app later
+- ❌ Native iOS (Swift) — same problem in reverse
+- ❌ Flutter — requires learning Dart, smaller ecosystem
+- ❌ Ionic/WebView — inferior performance and user experience
+
+---
 
 ## Tech Stack
-- **Backend (API):** Python 3.11, Flask 3.0.0 (serves as REST API)
-- **Mobile Frontend:** Kotlin, Android SDK (Native Android)
-- **Web Frontend:** HTML, CSS, Vanilla JavaScript (maintained for web access)
-- **AI:** Groq API with Llama 3.3 70B model
-- **Translation:** Google AI Studio (Gemini 2.0 Flash)
-- **Database:** SQLite (local) → will need cloud DB for cross-device sync
-- **Environment:** python-dotenv for API key management
 
-## Project Structure (Target - Android + Web)
+### Mobile Frontend
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Framework | React Native | Cross-platform mobile UI |
+| Toolchain | Expo (Managed Workflow) | Simplified builds, testing, deployment |
+| Language | TypeScript | Type safety, better tooling |
+| Navigation | React Navigation | Screen navigation |
+| State | React Context + Hooks | Simple state management |
+| HTTP Client | Fetch / Axios | API communication |
+
+### Backend (API Server)
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Framework | Python 3.11 + Flask | REST API server |
+| Hosting | Railway or Render | Cloud deployment (PaaS) |
+| Database | SQLite → PostgreSQL | Data persistence (migrate later) |
+| AI - Stories | Groq API (Llama 3.3 70B) | Story generation |
+| AI - Translation | Google AI Studio (Gemini 2.0 Flash) | Multi-language support |
+
+### Authentication
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Provider | Supabase Auth | User authentication service |
+| Methods | Google Sign-In, Apple Sign-In, Email/Password | Frictionless login options |
+| Tokens | JWT | Secure API authentication |
+
+### Future (When Needed)
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| Payments | RevenueCat | Subscription management |
+| Database | Supabase PostgreSQL | Cloud database with sync |
+| Analytics | Expo Analytics or Mixpanel | Usage tracking |
+
+---
+
+## Authentication Strategy
+
+### User Experience Flow
 ```
-bedtime_story_app/
-├── backend/                    # Flask API server
-│   ├── app.py                  # Main API routes
-│   ├── llm_config.py           # LLM prompts and configuration
-│   ├── auth.py                 # Authentication logic
+┌─────────────────────────────────────────────────────────────┐
+│                    APP DOWNLOAD                             │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│              GUEST MODE (No Account Required)               │
+│  • Generate stories ✓                                       │
+│  • Customize settings ✓                                     │
+│  • Read stories ✓                                           │
+│  • Save stories ✗ (prompts for account)                     │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼ User wants to save a story
+┌─────────────────────────────────────────────────────────────┐
+│              FRICTIONLESS ACCOUNT CREATION                  │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │  [  Continue with Google  ]  ← One tap              │   │
+│  │  [  Continue with Apple   ]  ← One tap (iOS)        │   │
+│  │  ─────────── or ───────────                         │   │
+│  │  [  Sign up with Email    ]  ← Fallback option      │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────┬───────────────────────────────────────┘
+                      ▼
+┌─────────────────────────────────────────────────────────────┐
+│              LOGGED IN USER                                 │
+│  • All guest features ✓                                     │
+│  • Save stories ✓                                           │
+│  • Access saved stories across devices ✓                    │
+│  • Sync settings ✓                                          │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Why Supabase Auth?
+1. **Social Login Built-in:** Google and Apple sign-in work out of the box
+2. **Apple Requirement:** iOS apps with social login MUST offer "Sign in with Apple"
+3. **Security:** Handles password hashing, token refresh, email verification correctly
+4. **Free Tier:** Generous limits for early-stage apps
+5. **React Native SDK:** Well-documented, actively maintained
+6. **Future Database:** Can use Supabase PostgreSQL when ready to migrate from SQLite
+
+---
+
+## Project Structure
+
+```
+bedtime-story-generator/
+├── mobile/                          # React Native + Expo app
+│   ├── app/                         # App screens (Expo Router)
+│   │   ├── (tabs)/                  # Tab navigation screens
+│   │   │   ├── index.tsx            # Home / Story Generation
+│   │   │   ├── my-stories.tsx       # Saved Stories
+│   │   │   └── settings.tsx         # User Settings
+│   │   ├── auth/                    # Authentication screens
+│   │   │   ├── login.tsx
+│   │   │   └── register.tsx
+│   │   └── _layout.tsx              # Root layout
+│   ├── components/                  # Reusable UI components
+│   │   ├── StoryCard.tsx
+│   │   ├── StoryTypeSelector.tsx
+│   │   └── ...
+│   ├── services/                    # API and auth services
+│   │   ├── api.ts                   # Flask API client
+│   │   ├── auth.ts                  # Supabase auth wrapper
+│   │   └── storage.ts               # Local storage utilities
+│   ├── hooks/                       # Custom React hooks
+│   │   ├── useAuth.ts
+│   │   └── useStories.ts
+│   ├── constants/                   # App constants
+│   │   └── config.ts                # API URLs, etc.
+│   ├── app.json                     # Expo configuration
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── backend/                         # Flask API server
+│   ├── app.py                       # Main Flask app, imports routes
+│   ├── config.py                    # Configuration settings
+│   ├── db.py                        # Database setup and helpers
+│   ├── routes/
+│   │   ├── __init__.py
+│   │   ├── auth.py                  # Auth routes (verify Supabase tokens)
+│   │   ├── stories.py               # Story generation and management
+│   │   └── settings.py              # User settings
+│   ├── services/
+│   │   ├── llm_service.py           # Groq API integration
+│   │   └── translation_service.py   # Google AI translation
+│   ├── llm_config.py                # Prompts and LLM settings
 │   ├── requirements.txt
-│   └── .env
-├── android/                    # Native Android app (Kotlin)
-│   ├── app/
-│   │   └── src/main/
-│   │       ├── java/...        # Kotlin source files
-│   │       └── res/...         # Android resources
-│   └── build.gradle
-├── web/                        # Web frontend (optional, for browser access)
-│   ├── index.html
-│   └── style.css
-└── shared/                     # Shared assets (stories catalog, etc.)
-    └── classic_tales.json      # Catalog of classic stories
+│   ├── .env                         # Environment variables (not in git)
+│   └── .env.example                 # Template for environment variables
+│
+├── web/                             # Legacy web frontend (reference only)
+│   ├── templates/
+│   │   └── index.html
+│   └── static/
+│       └── style.css
+│
+└── docs/                            # Documentation
+    ├── API.md                       # API documentation
+    └── DEPLOYMENT.md                # Deployment guide
 ```
+
+---
 
 ## Key Features
-1. **Story Length:** 1-12 minutes reading time (converted to ~180 words/min)
-2. **Overall flow**: Two-step flow: 1. Choose the story type. 2. Customize.
-3. **Story Types:**
-   - Original story: The app generates the stories based on the settings.
-   - Classic: Traditional tales from a pre-defined list.
-   - Classic with my awesome ideas: Select a classic story from the pre-defined list and combined with the inputs recieved (+ settings).
-4. **Customization:**
-    - Original story: Provide an optional input box so the user can enter ideas for the story.
-    - Classic: Show a collection of alphabetically ordered options in nice looking small cards. The first choice should be a button "Surprise me!" which will be a random selection of the pre-defined stories.
-    - Classic with my awesome ideas: Offer the same choice of classic (without the surprise button) + an input box where the user can input their ideas.
-4. **Languages:** English, Spanish, French, Portuguese, German, Italian (via translation)
-5. **Output:** Plain text stories
+
+### Story Generation
+1. **Story Length:** 1-12 minutes reading time (~180 words/minute)
+2. **Story Types:**
+   - **Original:** AI generates based on user input and settings
+   - **Classic:** Traditional tales from curated catalog (80+ stories)
+   - **Classic Remix:** Classic tale combined with user's ideas
+3. **Languages:** English, Spanish, French, Portuguese, German, Italian
+
+### User Flow
+1. **Step 1:** Choose story type (Original / Classic / Classic Remix)
+2. **Step 2:** Customize (length, ideas input, classic tale selection)
+3. **Step 3:** Generate and display story
+4. **Step 4:** Rate and save (requires account)
+
+---
+
+## API Endpoints
+
+### Public (No Auth Required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/generate-story` | Generate a new story |
+| GET | `/api/classic-tales` | Get catalog of classic tales |
+| GET | `/api/health` | Health check |
+
+### Protected (Auth Required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/stories` | Get user's saved stories |
+| POST | `/api/stories` | Save a story |
+| DELETE | `/api/stories/<id>` | Delete a saved story |
+| PUT | `/api/stories/<id>/rating` | Update story rating |
+| GET | `/api/settings` | Get user settings |
+| PUT | `/api/settings` | Update user settings |
+
+### Authentication Flow
+1. User authenticates via Supabase (Google/Apple/Email)
+2. Supabase returns a JWT access token
+3. Mobile app sends token in `Authorization: Bearer <token>` header
+4. Flask backend verifies token with Supabase
+5. Backend extracts user ID from token for data operations
+
+---
+
+## Environment Variables
+
+### Backend (.env)
+```bash
+# AI Services
+GROQ_API_KEY=your-groq-api-key
+GOOGLE_API_KEY=your-google-ai-studio-key
+
+# Supabase (for token verification)
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+
+# App Settings
+FLASK_ENV=production
+DATABASE_URL=sqlite:///stories.db  # Will change to PostgreSQL URL later
+```
+
+### Mobile (app.json or .env)
+```bash
+EXPO_PUBLIC_API_URL=https://your-api.railway.app
+EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+---
 
 ## Development Guidelines
 
-### Python Code Standards
-- Use clear, descriptive function names
-- Add docstrings to functions
-- Keep functions focused on single responsibility
-- Use type hints where helpful
+### Code Standards
+- **TypeScript** for mobile app (type safety)
+- **Python type hints** for backend (clarity)
+- **Functional components** with hooks (React Native)
+- **Small, focused functions** (single responsibility)
+- **Meaningful names** (self-documenting code)
 
-### Frontend Standards
-- Mobile-responsive design
-- Minimal dependencies
+### Git Workflow
+- **Main branch:** Always deployable
+- **Feature branches:** One branch per feature/fix
+- **Meaningful commits:** Describe what and why
+- **No secrets in git:** Use environment variables
 
-### API Usage
-- Groq API key stored in .env file (GROQ_API_KEY)
-- Google API key stored in .env file (GOOGLE_API_KEY) - for translation
-- Story generation model: `llama-3.3-70b-versatile` (Groq)
-- Translation model: `gemini-2.0-flash` (Google AI Studio)
-- Temperature: 0.7 for creative stories
-- Max tokens: 2048
+### Testing Strategy
+- **Manual testing** during development (Expo Go app)
+- **Physical device testing** before store submission
+- **API testing** with Postman or similar tool
+- **Unit tests** for critical business logic (future)
+
+---
+
+## Store Requirements
+
+### Google Play Store
+- **Account:** Google Play Console ($25 one-time)
+- **Rating:** "Everyone" (ages 2-10 target audience)
+- **Content Policy:** Family-friendly content only
+- **Required Assets:**
+  - App icon (512x512 PNG)
+  - Feature graphic (1024x500)
+  - Screenshots (phone + tablet)
+  - Privacy policy URL
+  - App description
+
+### Apple App Store
+- **Account:** Apple Developer Program ($99/year)
+- **Rating:** 4+ (suitable for children)
+- **Requirements:**
+  - "Sign in with Apple" (required if any social login offered)
+  - Privacy policy URL
+  - App icons (multiple sizes)
+  - Screenshots (various device sizes)
+  - App description
+
+---
+
+## Notes for Development
+
+### Priorities
+1. **Functionality over perfection** — Ship working features
+2. **Simplicity over complexity** — Minimal viable implementation
+3. **User experience over technical elegance** — What users see matters most
 
 ### What NOT to Change
-- Don't modify `.env` file
-- Don't remove the word count estimation logic
+- Don't modify API keys or secrets directly
+- Don't remove word count estimation logic
+- Don't break existing story generation flow
 
-## Current Limitations
-- Stories saved locally only (no cloud sync)
+### Common Commands
 
----
-
-# BACKLOG
-
-## Priority 1: Backend Refactoring (Required before Android)
-- [x] **Separate LLM configuration** - Extract prompts and LLM settings into `llm_config.py` ✓ DONE
-- [x] **User Authentication** - Email/password auth with secure password hashing ✓ DONE
-
-## Priority 2: Core Features
-- [x] **Settings Page** - ✅ DONE - User customizations for story personalization
-- [x] **Language Translation API** - ✅ DONE - Multi-language support via Google AI Studio  
-- [x] **Navigation Button Fix** - ✅ DONE - Fixed Step 2 navigation issues
-- [ ] **UX Flow Implementation** - Implement proper two-step story generation flow
-- [ ] **Login Form Enhancement** - Add enter key support for login/register forms
-
-## Priority 3: Android App
-- [ ] **Split app.py into modules** - Separate concerns into individual files:
-  - `db.py` - Database setup, connection helper, init_db()
-  - `routes/auth.py` - Authentication routes (register, login)
-  - `routes/stories.py` - Story routes (generate, save, my-stories, update-rating)
-  - `routes/settings.py` - Settings routes (get/save settings)
-  - `app.py` - Main Flask app setup, imports routes
-- [ ] **Android Project Setup** - Create Kotlin Android project with Android Studio
-- [ ] **API Client** - Connect Android app to Flask backend
-- [ ] **Story Generation Screen** - Port story form to native Android UI
-- [ ] **My Stories Screen** - View saved stories
-- [ ] **Settings Screen** - User preferences
-- [ ] **Play Store Preparation** - Icons, screenshots, listing
-
-## Priority 4: Future Enhancements
-- [ ] **Password Reset (Email-based)** - Forgot password flow with email service
-- [ ] Cloud database for cross-device sync
-- [ ] Character name customization
-- [ ] Story illustrations (AI-generated)
-- [ ] Voice narration (text-to-speech)
-- [ ] Offline mode with cached stories
-- [ ] Family accounts (multiple children profiles)
-
----
-
-## Testing
-- Manual testing in browser
-- Test story generation (always in English first)
-- Test translation to different languages
-- Test all three story types
-- Verify mobile responsiveness
-
-## Environment Setup
+#### Mobile (Expo)
 ```bash
-py -3.11 -m venv venv
-.\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python app.py
+cd mobile
+npm install              # Install dependencies
+npx expo start           # Start development server
+npx expo start --ios     # Start iOS simulator
+npx expo start --android # Start Android emulator
+eas build --platform all # Build for both stores
 ```
 
-## Common Tasks
-- Run app: `python app.py`
-- Install new package: `pip install <package>` then `pip freeze > requirements.txt`
-- Access app: http://localhost:5000
+#### Backend (Flask)
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate  # or .\venv\Scripts\Activate.ps1 on Windows
+pip install -r requirements.txt
+python app.py             # Run locally
+```
 
-## Notes for Claude Code
-1. First think through the problem, read the codebase for relevant files, and write a plan to tasks/todo.md.
-2. The plan should have a list of todo items that you can check off as you complete them
-3. Before you begin working, check in with me and I will verify the plan.
-4. Then, begin working on the todo items, marking them as complete as you go.
-5. Please every step of the way just give me a high level explanation of what changes you made, be didactical as the user (although he knows how to code) is not a software engineer
-6. Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity.
-7. Finally, add a review section to the todo.md file with a summary of the changes you made and any other relevant information.
-8. DO NOT BE LAZY. NEVER BE LAZY. IF THERE IS A BUG FIND THE ROOT CAUSE AND FIX IT. NO TEMPORARY FIXES. YOU ARE A SENIOR DEVELOPER. NEVER BE LAZY
-9. MAKE ALL FIXES AND CODE CHANGES AS SIMPLE AS HUMANLY POSSIBLE. THEY SHOULD ONLY IMPACT NECESSARY CODE RELEVANT TO THE TASK AND NOTHING ELSE. IT SHOULD IMPACT AS LITTLE CODE AS POSSIBLE. YOUR GOAL IS TO NOT INTRODUCE ANY BUGS. IT'S ALL ABOUT SIMPLICITY
-10. This is is not a prototype, although it is a simple app - prioritize functionality over perfection
-11. Maintain the simple architecture unless explicitly asked to scale up
-12. Always test that changes work with the Groq API integration
-13. Perform one logical change at a time: don't do massive changes to the code base in one single step, break the big changes down to managable and understandable sub-steps.
-14. When accomplishing a task ALWAYS update the .\tasks\todo.md
+---
+
+## Current Limitations (To Address Later)
+- SQLite doesn't sync across devices (migrate to PostgreSQL)
+- No offline story generation (requires internet)
+- No push notifications
+- No analytics/crash reporting
+
+---
+
+## Reference Documents
+- [Expo Documentation](https://docs.expo.dev/)
+- [React Navigation](https://reactnavigation.org/)
+- [Supabase Auth for React Native](https://supabase.com/docs/guides/auth/quickstarts/react-native)
+- [RevenueCat React Native](https://www.revenuecat.com/docs/reactnative)
+- [Railway Deployment](https://docs.railway.app/)
