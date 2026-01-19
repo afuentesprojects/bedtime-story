@@ -274,10 +274,43 @@ textarea {
     border-radius: 0 5px 5px 0;
 }
 
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
 .saved-story-title {
     color: #667eea;
-    margin-bottom: 10px;
+    margin: 0;
     font-size: 1.2em;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.remove-story-btn {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px 8px;
+    border-radius: 4px;
+    color: #999;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.remove-story-btn:hover {
+    background-color: #ffebee;
+    color: #d32f2f;
+    transform: scale(1.1);
+}
+
+.remove-story-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    transform: none;
 }
 
 .story-meta {

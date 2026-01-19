@@ -630,6 +630,9 @@
                     currentStoryData.title = title;
                     currentStoryData.story_text = storyBody;
                     currentStoryData.language = result.language || 'English';
+                    
+                    // Hide the story creation interface and show only the story
+                    document.querySelector('.story-creator').style.display = 'none';
                     storyOutput.style.display = 'block';
 
                     // Show save section if logged in
@@ -1063,7 +1066,10 @@
 
             storiesList.innerHTML = stories.map(story => `
                 <div class="saved-story" data-story-id="${story.id}">
-                    <h3 class="saved-story-title">${story.title || 'Untitled Story'}</h3>
+                    <div class="story-header">
+                        <h3 class="saved-story-title">${story.title || 'Untitled Story'}</h3>
+                        <button class="remove-story-btn" data-story-id="${story.id}" title="Delete this story">🗑️</button>
+                    </div>
                     <div class="story-meta">
                         <div class="story-rating-edit star-rating" data-story-id="${story.id}" data-current-rating="${story.rating}">
                             ${[1,2,3,4,5].map(i => `<span class="star ${i <= story.rating ? 'selected' : ''}" data-rating="${i}">&#9733;</span>`).join('')}
@@ -1136,6 +1142,67 @@
                     starsInDiv.forEach(s => {
                         s.classList.remove('hovered');
                     });
+                });
+            });
+
+            // Add click handlers for remove buttons
+            document.querySelectorAll('.remove-story-btn').forEach(removeBtn => {
+                removeBtn.addEventListener('click', async function() {
+                    const storyId = this.dataset.storyId;
+                    const storyElement = this.closest('.saved-story');
+                    const storyTitle = storyElement.querySelector('.saved-story-title').textContent;
+                    
+                    // Show confirmation dialog
+                    if (!confirm(`Are you sure you want to delete "${storyTitle}"?\n\nThis action cannot be undone.`)) {
+                        return;
+                    }
+                    
+                    // Disable button during deletion
+                    this.disabled = true;
+                    this.textContent = '⏳';
+                    
+                    try {
+                        const response = await fetch('/delete-story', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                story_id: storyId,
+                                user_id: localStorage.getItem('user_id'),
+                                token: localStorage.getItem('token')
+                            })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Remove story from DOM with animation
+                            storyElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                            storyElement.style.opacity = '0';
+                            storyElement.style.transform = 'translateX(-20px)';
+                            
+                            setTimeout(() => {
+                                storyElement.remove();
+                                
+                                // Check if no stories left
+                                const remainingStories = document.querySelectorAll('.saved-story');
+                                if (remainingStories.length === 0) {
+                                    storiesList.innerHTML = '<p>No saved stories yet.</p>';
+                                }
+                            }, 300);
+                        } else {
+                            alert('Failed to delete story: ' + (result.error || 'Unknown error'));
+                            // Restore button
+                            this.disabled = false;
+                            this.textContent = '🗑️';
+                        }
+                    } catch (error) {
+                        alert('Failed to delete story: ' + error.message);
+                        // Restore button
+                        this.disabled = false;
+                        this.textContent = '🗑️';
+                    }
                 });
             });
         }

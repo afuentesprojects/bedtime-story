@@ -471,6 +471,47 @@ def update_rating():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+@app.route('/delete-story', methods=['POST'])
+def delete_story():
+    """Delete a saved story."""
+    try:
+        data = request.json
+        story_id = data.get('story_id')
+        user_id = data.get('user_id')
+        token = data.get('token')
+
+        if not story_id or not user_id or not token:
+            return jsonify({"success": False, "error": "Missing required data"})
+
+        conn = get_db()
+        
+        # Verify user authentication
+        user = conn.execute(
+            'SELECT id FROM users WHERE id = ? AND token = ?',
+            (user_id, token)
+        ).fetchone()
+        
+        if not user:
+            conn.close()
+            return jsonify({"success": False, "error": "Invalid authentication"})
+
+        # Delete the story (only if it belongs to the user)
+        result = conn.execute(
+            'DELETE FROM saved_stories WHERE id = ? AND user_id = ?',
+            (story_id, user_id)
+        )
+        
+        if result.rowcount == 0:
+            conn.close()
+            return jsonify({"success": False, "error": "Story not found or not authorized"})
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True, "message": "Story deleted successfully"})
+        
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 @app.route('/languages', methods=['GET'])
 def get_languages():
     """Get list of supported languages for translation."""

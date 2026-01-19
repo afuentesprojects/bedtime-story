@@ -25,18 +25,15 @@
   - Goal: Give more control to the user, autogeneration can be frustrating / confusing 
   - Impact: Better user experience, clearer navigation
   
-- [ ] **Generate the Story in its own screen**
+- [x] **Generate the Story in its own screen**
   - Current: The Story is generated below the input options
   - Goal: Make the story the protagonist: after hitting the "Generate Story" the inputs should disapear and only the story should remain in the main screen (keeping the high-level navigation buttons)
   - Impact: Better UX
 
-- [ ] **Add Remove Botton for Each Element in My Saved Stories**
+- [x] **Add Remove Button for Each Element in My Saved Stories**
   - Current: Functionality is not supported
   - Goal: Users have more flexibility
   - Impact: Better personalization
-
-
-
 
 - [ ] **Add Enter Key Support to Login Forms**
   - Current: Users must click login button (no enter key support)
@@ -104,6 +101,51 @@
 ---
 
 ## Recent Bug Fixes & Improvements
+
+### Story Display Enhancement (January 2026)
+**Feature**: "Generate the Story in its own screen" - Clean story presentation without input clutter
+
+**Implementation**:
+- Modified story generation success handler in `templates/index.html`
+- Added logic to hide `.story-creator` section when story is displayed
+- Story now appears as the main focus with only top navigation visible
+- "Generate Another Story" button properly resets interface back to Step 1
+
+**Files Modified**: `templates/index.html` (1 line addition)
+**User Experience**: Stories now display in a clean, uncluttered interface that puts the story content front and center
+
+**Technical Details**:
+- When story generation completes, the entire customization interface disappears
+- Only the story content, rating/save options, and top navigation remain visible
+- Navigation to My Stories/Settings works correctly from story screen
+- "Generate Another Story" returns users to Step 1 (story type selection)
+
+### Delete Story Functionality (January 2026)
+**Feature**: "Add Remove Button for Each Element in My Saved Stories" - Users can now delete saved stories
+
+**Implementation**:
+- Created `/delete-story` POST endpoint in `app.py` with proper authentication and authorization
+- Added remove button (🗑️) to each story card header in `templates/index.html`
+- Implemented confirmation dialog and smooth deletion animation
+- Added CSS styling for remove button with hover effects
+
+**Files Modified**: 
+- `app.py` (new delete endpoint - 30 lines)
+- `templates/index.html` (UI changes and JavaScript logic - 50 lines)
+- `static/style.css` (button styling - 25 lines)
+
+**User Experience**: 
+- Clean trash can icon in top-right corner of each story card
+- Confirmation dialog prevents accidental deletions
+- Button shows loading state during deletion
+- Smooth fade-out animation when story is removed
+- Proper error handling with user feedback
+
+**Security Features**:
+- Stories can only be deleted by their owner (user_id validation)
+- Token authentication required for all delete operations
+- SQL injection protection with parameterized queries
+- Proper error handling without exposing sensitive information
 
 ### Navigation Button Fix (January 2026)
 **Issue**: Navigation buttons ("Back to Story Types", "My Stories", "Settings") were unresponsive when clicked from Step 2 of story generation.
