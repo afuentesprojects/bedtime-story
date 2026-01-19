@@ -43,42 +43,121 @@
             </div>
         </div>
 
-        <form id="storyForm">
-            <!-- Length Input -->
-            <div class="form-group">
-                <label for="length">Reading Time (minutes):</label>
-                <input type="number" id="length" name="length" min="1" max="30" value="5" required>
-            </div>
+        <!-- Story Creation Interface -->
+        <div class="story-creator">
+            <h2 id="mainHeader">What kind of story tonight?</h2>
+            
+            <!-- Step 1: Story Type Selection -->
+            <div class="story-type-selection">
+                <div class="story-type-card" data-type="original" style="background-image: url('{{ url_for('static', filename='images/icons/original-story.webp') }}')">
+                    <div class="card-overlay">
+                        <h3>Original Story</h3>
+                        <p>Create something completely new</p>
+                        <small>✨ Surprise me or tell me what you want</small>
+                    </div>
+                </div>
 
-            <!-- Story Type Selection -->
-            <div class="form-group">
-                <label>Story Type:</label>
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="story_type" value="made_up" checked>
-                        100% Made Up (Original Story)
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="story_type" value="classic">
-                        Classic Story
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="story_type" value="mixed">
-                        Classic with my own touch
-                    </label>
+                <div class="story-type-card" data-type="classic" style="background-image: url('{{ url_for('static', filename='images/icons/classic-story.webp') }}')">
+                    <div class="card-overlay">
+                        <h3>Classic Tale</h3>
+                        <p>Tell a timeless favorite</p>
+                        <small>🎲 Choose or get a surprise</small>
+                    </div>
+                </div>
+
+                <div class="story-type-card" data-type="classic_mixed" style="background-image: url('{{ url_for('static', filename='images/icons/classic-with-my-own-touch.webp') }}')">
+                    <div class="card-overlay">
+                        <h3>Classic + My Ideas</h3>
+                        <p>Remix a classic with your twist</p>
+                        <small>🌟 Make classics your own</small>
+                    </div>
                 </div>
             </div>
 
-            <!-- Modifications Input (shown only for mixed type) -->
-            <div class="form-group" id="modificationsGroup" style="display: none;">
-                <label for="modifications">Modifications to the classic story:</label>
-                <textarea id="modifications" name="modifications" rows="3"
-                          placeholder="e.g., 'Make Little Red Riding Hood a brave astronaut instead'"></textarea>
-            </div>
+            <!-- Step 2: Customization (appears based on selection) -->
+            <div class="story-customization">
+                <!-- Original Story Options -->
+                <div class="customization-section" id="originalCustomization" style="display: none;">
+                    <button type="button" class="back-btn" id="backFromOriginal">← Back to Story Types</button>
+                    <h2 class="step-header">✨ Create Your Original Story</h2>
+                    
+                    <!-- Story Length Selector -->
+                    <div class="length-section">
+                        <label for="length">Story Length:</label>
+                        <div class="length-input-wrapper">
+                            <button type="button" class="length-btn" id="lengthDown">−</button>
+                            <input type="number" id="length" name="length" min="1" max="30" value="5" required readonly>
+                            <button type="button" class="length-btn" id="lengthUp">+</button>
+                            <span class="length-label">minutes</span>
+                        </div>
+                    </div>
+                    
+                    <h3>What should the story be about?</h3>
+                    <p class="section-description">Leave empty for a surprise, or describe your idea...</p>
+                    <textarea id="originalTopic" placeholder="e.g., 'A brave mouse knight' or 'Dragons in space'" rows="3"></textarea>
+                    <button type="button" class="generate-btn" id="generateOriginal">Generate Story</button>
+                    <div class="auto-generate-hint">Or wait 3 seconds for automatic generation...</div>
+                </div>
 
-            <!-- Generate Button -->
-            <button type="submit" id="generateBtn">Generate Story</button>
-        </form>
+                <!-- Classic Tale Selection -->
+                <div class="customization-section" id="classicCustomization" style="display: none;">
+                    <button type="button" class="back-btn" id="backFromClassic">← Back to Story Types</button>
+                    <h2 class="step-header">📚 Choose Your Classic Tale</h2>
+                    
+                    <!-- Story Length Selector -->
+                    <div class="length-section">
+                        <label for="lengthClassic">Story Length:</label>
+                        <div class="length-input-wrapper">
+                            <button type="button" class="length-btn" id="lengthDownClassic">−</button>
+                            <input type="number" id="lengthClassic" name="lengthClassic" min="1" max="30" value="5" required readonly>
+                            <button type="button" class="length-btn" id="lengthUpClassic">+</button>
+                            <span class="length-label">minutes</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Choose your classic tale</h3>
+                    <div class="classic-search">
+                        <input type="search" id="taleSearch" placeholder="Search tales..." />
+                        <button type="button" class="surprise-btn" id="surpriseMe">🎲 Surprise me!</button>
+                    </div>
+                    <div class="tales-browser" id="talesBrowser">
+                        <!-- Classic tales will be loaded here -->
+                    </div>
+                    <button type="button" class="generate-btn" id="generateClassic" style="display: none;">Generate Story</button>
+                </div>
+
+                <!-- Classic + Ideas Options -->
+                <div class="customization-section" id="classicMixedCustomization" style="display: none;">
+                    <button type="button" class="back-btn" id="backFromClassicMixed">← Back to Story Types</button>
+                    <h2 class="step-header">🎭 Remix a Classic Story</h2>
+                    
+                    <!-- Story Length Selector -->
+                    <div class="length-section">
+                        <label for="lengthClassicMixed">Story Length:</label>
+                        <div class="length-input-wrapper">
+                            <button type="button" class="length-btn" id="lengthDownClassicMixed">−</button>
+                            <input type="number" id="lengthClassicMixed" name="lengthClassicMixed" min="1" max="30" value="5" required readonly>
+                            <button type="button" class="length-btn" id="lengthUpClassicMixed">+</button>
+                            <span class="length-label">minutes</span>
+                        </div>
+                    </div>
+                    
+                    <h3>Pick your classic tale</h3>
+                    <div class="classic-search">
+                        <input type="search" id="taleSearchMixed" placeholder="Search tales..." />
+                    </div>
+                    <div class="tales-browser" id="talesBrowserMixed">
+                        <!-- Classic tales will be loaded here -->
+                    </div>
+                    
+                    <div class="modification-section" id="modificationSection" style="display: none;">
+                        <h3>What's your awesome twist?</h3>
+                        <textarea id="classicModifications" placeholder="e.g., 'Make Little Red Riding Hood a space explorer'" rows="3"></textarea>
+                        <button type="button" class="generate-btn" id="generateClassicMixed">Generate Story</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Loading Indicator -->
         <div id="loading" style="display: none;">
@@ -211,15 +290,38 @@
     </div>
 
     <script>
-        const form = document.getElementById('storyForm');
+        // =============================================================================
+        // DOM ELEMENTS - ALL DECLARED AT TOP TO ENSURE AVAILABILITY
+        // =============================================================================
+        
+        // Story creation elements
+        const storyTypeCards = document.querySelectorAll('.story-type-card');
         const loading = document.getElementById('loading');
         const storyOutput = document.getElementById('storyOutput');
         const storyTitle = document.getElementById('storyTitle');
         const storyText = document.getElementById('storyText');
         const error = document.getElementById('error');
-        const modificationsGroup = document.getElementById('modificationsGroup');
-        const storyTypeRadios = document.querySelectorAll('input[name="story_type"]');
         const newStoryBtn = document.getElementById('newStoryBtn');
+
+        // Customization sections
+        const originalCustomization = document.getElementById('originalCustomization');
+        const classicCustomization = document.getElementById('classicCustomization');
+        const classicMixedCustomization = document.getElementById('classicMixedCustomization');
+        
+        // Input elements
+        const originalTopic = document.getElementById('originalTopic');
+        const taleSearch = document.getElementById('taleSearch');
+        const taleSearchMixed = document.getElementById('taleSearchMixed');
+        const talesBrowser = document.getElementById('talesBrowser');
+        const talesBrowserMixed = document.getElementById('talesBrowserMixed');
+        const classicModifications = document.getElementById('classicModifications');
+        const modificationSection = document.getElementById('modificationSection');
+        
+        // Generate buttons
+        const generateOriginal = document.getElementById('generateOriginal');
+        const generateClassic = document.getElementById('generateClassic');
+        const generateClassicMixed = document.getElementById('generateClassicMixed');
+        const surpriseMe = document.getElementById('surpriseMe');
 
         // Login elements
         const loggedOut = document.getElementById('loggedOut');
@@ -235,19 +337,19 @@
         const myStoriesBtn = document.getElementById('myStoriesBtn');
         const loginError = document.getElementById('loginError');
         const registerError = document.getElementById('registerError');
-
+        
         // Save story elements
         const saveSection = document.getElementById('saveSection');
         const starRating = document.getElementById('starRating');
         const stars = document.querySelectorAll('.star');
         const saveStoryBtn = document.getElementById('saveStoryBtn');
         const saveMessage = document.getElementById('saveMessage');
-
+        
         // My stories elements
         const myStoriesSection = document.getElementById('myStoriesSection');
         const storiesList = document.getElementById('storiesList');
         const backToGeneratorBtn = document.getElementById('backToGeneratorBtn');
-
+        
         // Settings elements
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsSection = document.getElementById('settingsSection');
@@ -257,9 +359,381 @@
         const toneCustomInput = document.getElementById('toneCustom');
         const childAgeInput = document.getElementById('childAge');
 
-        // Current story data (to save later)
+        // =============================================================================
+        // STATE VARIABLES
+        // =============================================================================
+        
+        let currentStoryType = null;
+        let selectedClassicTale = null;
+        let selectedClassicTaleMixed = null;
+        let autoGenerateTimer = null;
+        let allTales = [];
         let currentStoryData = {};
         let selectedRating = 0;
+
+        // =============================================================================
+        // STORY TYPE SELECTION LOGIC
+        // =============================================================================
+        
+        // Handle story type card clicks
+        storyTypeCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const storyType = this.getAttribute('data-type');
+                selectStoryType(storyType);
+            });
+        });
+
+        function selectStoryType(storyType) {
+            // Clear previous selections
+            storyTypeCards.forEach(card => card.classList.remove('selected'));
+            hideAllCustomizations();
+            clearAutoGenerateTimer();
+
+            // Set current selection
+            currentStoryType = storyType;
+            
+            // Hide Step 1 (story type selection) and main header
+            document.querySelector('.story-type-selection').style.display = 'none';
+            document.getElementById('mainHeader').style.display = 'none';
+            
+            // Show Step 2 (customization) after a brief transition
+            setTimeout(() => {
+                switch(storyType) {
+                    case 'original':
+                        showOriginalCustomization();
+                        break;
+                    case 'classic':
+                        showClassicCustomization();
+                        break;
+                    case 'classic_mixed':
+                        showClassicMixedCustomization();
+                        break;
+                }
+            }, 100); // Small delay for smooth transition
+        }
+
+        function hideAllCustomizations() {
+            originalCustomization.style.display = 'none';
+            classicCustomization.style.display = 'none';
+            classicMixedCustomization.style.display = 'none';
+            originalCustomization.classList.remove('show');
+            classicCustomization.classList.remove('show');
+            classicMixedCustomization.classList.remove('show');
+        }
+
+        function showOriginalCustomization() {
+            originalCustomization.style.display = 'block';
+            setTimeout(() => originalCustomization.classList.add('show'), 10);
+            startAutoGenerateTimer();
+        }
+
+        function showClassicCustomization() {
+            classicCustomization.style.display = 'block';
+            setTimeout(() => classicCustomization.classList.add('show'), 10);
+        }
+
+        function showClassicMixedCustomization() {
+            classicMixedCustomization.style.display = 'block';
+            setTimeout(() => classicMixedCustomization.classList.add('show'), 10);
+        }
+
+        function backToStorySelection() {
+            try {
+                // Hide all Step 2 sections
+                hideAllCustomizations();
+                
+                // Show Step 1 again
+                const storySelection = document.querySelector('.story-type-selection');
+                if (storySelection) {
+                    storySelection.style.display = 'grid'; // Use grid instead of block
+                }
+                
+                const mainHeader = document.getElementById('mainHeader');
+                if (mainHeader) {
+                    mainHeader.style.display = 'block'; // Show main header again
+                }
+                
+                // Clear current selection
+                currentStoryType = null;
+                if (storyTypeCards) {
+                    storyTypeCards.forEach(card => card.classList.remove('selected'));
+                }
+                
+                // Clear any timer
+                clearAutoGenerateTimer();
+            } catch (error) {
+                console.error('Error in backToStorySelection:', error);
+            }
+        }
+
+        // =============================================================================
+        // AUTO-GENERATION TIMER FOR ORIGINAL STORIES
+        // =============================================================================
+        
+        function startAutoGenerateTimer() {
+            clearAutoGenerateTimer();
+            autoGenerateTimer = setTimeout(() => {
+                if (currentStoryType === 'original') {
+                    generateStory('original', originalTopic.value || '');
+                }
+            }, 3000); // 3 second delay
+        }
+
+        function clearAutoGenerateTimer() {
+            if (autoGenerateTimer) {
+                clearTimeout(autoGenerateTimer);
+                autoGenerateTimer = null;
+            }
+        }
+
+        // Reset timer when user types in original topic
+        originalTopic.addEventListener('input', () => {
+            if (currentStoryType === 'original') {
+                startAutoGenerateTimer();
+            }
+        });
+
+        // =============================================================================
+        // CLASSIC TALES BROWSER AND SEARCH
+        // =============================================================================
+        
+        async function loadClassicTales() {
+            try {
+                const response = await fetch('/classic-tales');
+                const result = await response.json();
+                
+                if (result.success) {
+                    allTales = result.tales.filter(tale => tale.id !== 'surprise'); // Remove "Surprise me" for browsing
+                    allTales.sort((a, b) => a.title.localeCompare(b.title)); // Sort alphabetically
+                    renderTalesBrowser(allTales, talesBrowser, 'classic');
+                    renderTalesBrowser(allTales, talesBrowserMixed, 'classic_mixed');
+                }
+            } catch (err) {
+                console.error('Error loading classic tales:', err);
+            }
+        }
+
+        function renderTalesBrowser(tales, container, type) {
+            const getEmojiForCategory = (category) => {
+                const emojiMap = {
+                    'fairy_tale': '🧚',
+                    'fable': '🦊', 
+                    'myth': '⚡',
+                    'legend': '⚔️',
+                    'religious': '🕊️',
+                    'tall_tale': '🎪',
+                    'folktale': '🏡',
+                    'modern_classic': '📖',
+                    'classic_chapter': '📚',
+                    'classic_short': '📝'
+                };
+                return emojiMap[category] || '📖';
+            };
+
+            container.innerHTML = tales.map(tale => `
+                <div class="tale-item" data-tale-id="${tale.id}" data-type="${type}">
+                    <div class="tale-emoji">${getEmojiForCategory(tale.category)}</div>
+                    <div class="tale-info">
+                        <h4>${tale.title}</h4>
+                        <p>${tale.description}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click handlers for tale selection
+            container.querySelectorAll('.tale-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const taleId = this.dataset.taleId;
+                    const taleType = this.dataset.type;
+                    selectTale(taleId, taleType, this);
+                });
+            });
+        }
+
+        function selectTale(taleId, type, element) {
+            // Remove previous selection in this browser
+            const container = element.parentElement;
+            container.querySelectorAll('.tale-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            
+            // Mark this tale as selected
+            element.classList.add('selected');
+            
+            if (type === 'classic') {
+                selectedClassicTale = taleId;
+                generateClassic.style.display = 'block';
+            } else if (type === 'classic_mixed') {
+                selectedClassicTaleMixed = taleId;
+                modificationSection.style.display = 'block';
+                setTimeout(() => modificationSection.classList.add('show'), 10);
+            }
+        }
+
+        // Search functionality
+        function setupTaleSearch(searchInput, browser, type) {
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                const filteredTales = allTales.filter(tale => 
+                    tale.title.toLowerCase().includes(query) ||
+                    tale.description.toLowerCase().includes(query)
+                );
+                renderTalesBrowser(filteredTales, browser, type);
+            });
+        }
+
+        // =============================================================================
+        // BUTTON HANDLERS AND STORY GENERATION
+        // =============================================================================
+        
+        // Generate Original Story
+        generateOriginal.addEventListener('click', () => {
+            generateStory('original', originalTopic.value || '');
+        });
+
+        // Generate Classic Story
+        generateClassic.addEventListener('click', () => {
+            if (selectedClassicTale) {
+                generateStory('classic', '', selectedClassicTale);
+            }
+        });
+
+        // Generate Classic Mixed Story
+        generateClassicMixed.addEventListener('click', () => {
+            if (selectedClassicTaleMixed && classicModifications.value.trim()) {
+                generateStory('classic_mixed', classicModifications.value, selectedClassicTaleMixed);
+            }
+        });
+
+        // Surprise Me button
+        surpriseMe.addEventListener('click', () => {
+            generateStory('classic', '', 'surprise');
+        });
+
+        // Main story generation function
+        async function generateStory(storyType, modifications = '', classicTaleId = null) {
+            // Clear previous results
+            hideAllSections();
+            loading.style.display = 'block';
+            clearAutoGenerateTimer();
+
+            // Get length from the appropriate input based on story type
+            let lengthValue;
+            if (storyType === 'original') {
+                lengthValue = document.getElementById('length').value;
+            } else if (storyType === 'classic') {
+                lengthValue = document.getElementById('lengthClassic').value;
+            } else if (storyType === 'classic_mixed') {
+                lengthValue = document.getElementById('lengthClassicMixed').value;
+            }
+
+            // Prepare story data
+            const storyData = {
+                story_type: storyType,
+                length: lengthValue,
+                modifications: modifications,
+                classic_tale_id: classicTaleId,
+                user_id: localStorage.getItem('user_id'),
+                token: localStorage.getItem('token')
+            };
+
+            // Store for saving later
+            currentStoryData = storyData;
+
+            try {
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(storyData)
+                });
+
+                const result = await response.json();
+                loading.style.display = 'none';
+
+                if (result.success) {
+                    // Extract title and story body
+                    const fullStory = result.story;
+                    const lines = fullStory.split('\n');
+                    const title = lines[0].replace(/^#+\s*/, '').trim();
+                    const storyBody = lines.slice(1).join('\n').trim();
+
+                    storyTitle.textContent = title;
+                    storyText.textContent = storyBody;
+                    currentStoryData.title = title;
+                    currentStoryData.story_text = storyBody;
+                    currentStoryData.language = result.language || 'English';
+                    storyOutput.style.display = 'block';
+
+                    // Show save section if logged in
+                    const saveSection = document.getElementById('saveSection');
+                    if (isLoggedIn()) {
+                        saveSection.style.display = 'block';
+                        selectedRating = 0;
+                        updateStarDisplay();
+                        const saveMessage = document.getElementById('saveMessage');
+                        saveMessage.style.display = 'none';
+                        document.getElementById('saveStoryBtn').disabled = false;
+                    }
+                } else {
+                    error.querySelector('.error-message').textContent = 'Error generating story: ' + result.error;
+                    error.style.display = 'block';
+                }
+            } catch (err) {
+                loading.style.display = 'none';
+                error.querySelector('.error-message').textContent = 'Error: Could not connect to the server. ' + err.message;
+                error.style.display = 'block';
+            }
+        }
+
+        function hideAllSections() {
+            storyOutput.style.display = 'none';
+            error.style.display = 'none';
+            document.getElementById('myStoriesSection').style.display = 'none';
+            document.getElementById('settingsSection').style.display = 'none';
+        }
+
+        // =============================================================================
+        // INITIALIZATION
+        // =============================================================================
+        
+        // Initialize the interface
+        function initializeInterface() {
+            // Load classic tales
+            loadClassicTales();
+            
+            // Setup search functionality
+            setupTaleSearch(taleSearch, talesBrowser, 'classic');
+            setupTaleSearch(taleSearchMixed, talesBrowserMixed, 'classic_mixed');
+            
+            // Initialize login state
+            checkLogin();
+            
+            // Hide all customizations initially
+            hideAllCustomizations();
+        }
+
+        // =============================================================================
+        // UTILITY FUNCTIONS
+        // =============================================================================
+        
+        // Helper to check if logged in
+        function isLoggedIn() {
+            return localStorage.getItem('user_id') && localStorage.getItem('token');
+        }
+
+        // Update star rating display
+        function updateStarDisplay() {
+            stars.forEach(star => {
+                const rating = parseInt(star.dataset.rating);
+                if (rating <= selectedRating) {
+                    star.classList.add('selected');
+                } else {
+                    star.classList.remove('selected');
+                }
+            });
+        }
 
         // Check if user is already logged in
         function checkLogin() {
@@ -279,15 +753,86 @@
             }
         }
 
-        // Helper to check if logged in
-        function isLoggedIn() {
-            return localStorage.getItem('user_id') && localStorage.getItem('token');
-        }
+        // =============================================================================
+        // EVENT HANDLERS - ALL BUTTON CLICKS AND INTERACTIONS  
+        // =============================================================================
+        
+        // Story Type Card Selection
+        storyTypeCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const storyType = this.getAttribute('data-type');
+                selectStoryType(storyType);
+            });
+        });
 
-        // Initialize login state
-        checkLogin();
+        // Original Topic Input - Reset Auto-Timer
+        originalTopic.addEventListener('input', () => {
+            if (currentStoryType === 'original') {
+                startAutoGenerateTimer();
+            }
+        });
 
-        // Toggle between login and register forms
+        // Generate Buttons
+        generateOriginal.addEventListener('click', () => {
+            generateStory('original', originalTopic.value || '');
+        });
+
+        generateClassic.addEventListener('click', () => {
+            if (selectedClassicTale) {
+                generateStory('classic', '', selectedClassicTale);
+            }
+        });
+
+        generateClassicMixed.addEventListener('click', () => {
+            if (selectedClassicTaleMixed && classicModifications.value.trim()) {
+                generateStory('classic_mixed', classicModifications.value, selectedClassicTaleMixed);
+            }
+        });
+
+        surpriseMe.addEventListener('click', () => {
+            generateStory('classic', '', 'surprise');
+        });
+
+        // Length Adjustment Buttons - Original
+        document.getElementById('lengthUp').addEventListener('click', function() {
+            const lengthInput = document.getElementById('length');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current < 30) lengthInput.value = current + 1;
+        });
+
+        document.getElementById('lengthDown').addEventListener('click', function() {
+            const lengthInput = document.getElementById('length');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current > 1) lengthInput.value = current - 1;
+        });
+
+        // Length Adjustment Buttons - Classic
+        document.getElementById('lengthUpClassic').addEventListener('click', function() {
+            const lengthInput = document.getElementById('lengthClassic');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current < 30) lengthInput.value = current + 1;
+        });
+
+        document.getElementById('lengthDownClassic').addEventListener('click', function() {
+            const lengthInput = document.getElementById('lengthClassic');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current > 1) lengthInput.value = current - 1;
+        });
+
+        // Length Adjustment Buttons - Classic Mixed
+        document.getElementById('lengthUpClassicMixed').addEventListener('click', function() {
+            const lengthInput = document.getElementById('lengthClassicMixed');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current < 30) lengthInput.value = current + 1;
+        });
+
+        document.getElementById('lengthDownClassicMixed').addEventListener('click', function() {
+            const lengthInput = document.getElementById('lengthClassicMixed');
+            const current = parseInt(lengthInput.value) || 5;
+            if (current > 1) lengthInput.value = current - 1;
+        });
+
+        // Login/Register Form Toggles
         showRegisterBtn.addEventListener('click', function() {
             loginForm.style.display = 'none';
             registerForm.style.display = 'block';
@@ -300,7 +845,7 @@
             registerError.style.display = 'none';
         });
 
-        // Login handler
+        // Login Handler
         loginBtn.addEventListener('click', async function() {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
@@ -336,7 +881,7 @@
             }
         });
 
-        // Register handler
+        // Register Handler
         registerBtn.addEventListener('click', async function() {
             const displayName = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
@@ -373,7 +918,7 @@
             }
         });
 
-        // Logout handler
+        // Logout Handler
         logoutBtn.addEventListener('click', function() {
             localStorage.removeItem('user_id');
             localStorage.removeItem('token');
@@ -382,16 +927,62 @@
             saveSection.style.display = 'none';
         });
 
-        // Show/hide modifications field based on story type
-        storyTypeRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'mixed') {
-                    modificationsGroup.style.display = 'block';
-                } else {
-                    modificationsGroup.style.display = 'none';
-                }
+        // Star Rating Handlers
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = parseInt(this.dataset.rating);
+                updateStarDisplay();
+            });
+
+            star.addEventListener('mouseenter', function() {
+                const hoverRating = parseInt(this.dataset.rating);
+                stars.forEach(s => {
+                    if (parseInt(s.dataset.rating) <= hoverRating) {
+                        s.classList.add('hovered');
+                    } else {
+                        s.classList.remove('hovered');
+                    }
+                });
             });
         });
+
+        starRating.addEventListener('mouseleave', function() {
+            stars.forEach(s => s.classList.remove('hovered'));
+        });
+
+        // Navigation Handlers
+        newStoryBtn.addEventListener('click', function() {
+            storyOutput.style.display = 'none';
+            document.querySelector('.story-creator').style.display = 'block';
+            backToStorySelection(); // Return to Step 1
+            window.scrollTo(0, 0);
+        });
+
+        // =============================================================================
+        // CORE FUNCTIONS
+        // =============================================================================
+
+        // Load classic tales
+        async function loadClassicTales() {
+            try {
+                const response = await fetch('/classic-tales');
+                const result = await response.json();
+                
+                if (result.success) {
+                    classicTaleSelect.innerHTML = result.tales.map(tale => 
+                        `<option value="${tale.id}">${tale.title}</option>`
+                    ).join('');
+                } else {
+                    classicTaleSelect.innerHTML = '<option value="">Error loading tales</option>';
+                }
+            } catch (err) {
+                classicTaleSelect.innerHTML = '<option value="">Error loading tales</option>';
+            }
+        }
+
+        // Load tales on page load
+        loadClassicTales();
+
 
         // Star rating click handler
         stars.forEach(star => {
@@ -429,74 +1020,7 @@
             });
         }
 
-        // Handle form submission
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            // Hide previous results and errors
-            storyOutput.style.display = 'none';
-            error.style.display = 'none';
-            loading.style.display = 'block';
-            myStoriesSection.style.display = 'none';
-
-            // Gather form data (language comes from user settings, not form)
-            const formData = {
-                length: document.getElementById('length').value,
-                story_type: document.querySelector('input[name="story_type"]:checked').value,
-                modifications: document.getElementById('modifications').value,
-                user_id: localStorage.getItem('user_id'),
-                token: localStorage.getItem('token')
-            };
-
-            // Store for saving later
-            currentStoryData = formData;
-
-            try {
-                const response = await fetch('/generate', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                const result = await response.json();
-                loading.style.display = 'none';
-
-                if (result.success) {
-                    // Extract title (first line) and story body
-                    const fullStory = result.story;
-                    const lines = fullStory.split('\n');
-                    const title = lines[0].replace(/^#+\s*/, '').trim(); // Remove any markdown # symbols
-                    const storyBody = lines.slice(1).join('\n').trim();
-
-                    storyTitle.textContent = title;
-                    storyText.textContent = storyBody;
-                    currentStoryData.title = title;
-                    currentStoryData.story_text = storyBody;
-                    currentStoryData.language = result.language || 'English'; // Get language from API response
-                    storyOutput.style.display = 'block';
-
-                    // Show save section if logged in
-                    if (isLoggedIn()) {
-                        saveSection.style.display = 'block';
-                        selectedRating = 0;
-                        updateStarDisplay();
-                        saveMessage.style.display = 'none';
-                        saveStoryBtn.disabled = false;
-                    }
-                } else {
-                    error.querySelector('.error-message').textContent =
-                        'Error generating story: ' + result.error;
-                    error.style.display = 'block';
-                }
-            } catch (err) {
-                loading.style.display = 'none';
-                error.querySelector('.error-message').textContent =
-                    'Error: Could not connect to the server. ' + err.message;
-                error.style.display = 'block';
-            }
-        });
+        // Story saving and rating functionality (keeping existing)
 
         // Save story handler
         saveStoryBtn.addEventListener('click', async function() {
@@ -558,8 +1082,12 @@
 
                 if (result.success) {
                     displayStories(result.stories);
-                    form.style.display = 'none';
+                    
+                    // Hide all other sections and show my stories
+                    hideAllCustomizations();
+                    document.querySelector('.story-creator').style.display = 'none';
                     storyOutput.style.display = 'none';
+                    settingsSection.style.display = 'none';
                     myStoriesSection.style.display = 'block';
                 }
             } catch (err) {
@@ -655,14 +1183,17 @@
         // Back to generator button
         backToGeneratorBtn.addEventListener('click', function() {
             myStoriesSection.style.display = 'none';
-            form.style.display = 'block';
+            document.querySelector('.story-creator').style.display = 'block';
+            // Ensure we return to Step 1, not Step 2
+            backToStorySelection();
         });
 
         // Settings button handler
         settingsBtn.addEventListener('click', async function() {
-            // Hide everything else - make settings a full "page"
+            // Hide all other sections and show settings
+            hideAllCustomizations();
             document.getElementById('loginSection').style.display = 'none';
-            form.style.display = 'none';
+            document.querySelector('.story-creator').style.display = 'none';
             storyOutput.style.display = 'none';
             myStoriesSection.style.display = 'none';
             settingsSection.style.display = 'block';
@@ -758,10 +1289,12 @@
         backFromSettingsBtn.addEventListener('click', function() {
             settingsSection.style.display = 'none';
             document.getElementById('loginSection').style.display = 'block';
-            form.style.display = 'block';
+            document.querySelector('.story-creator').style.display = 'block';
+            // Ensure we return to Step 1, not Step 2
+            backToStorySelection();
         });
 
-        // Age +/- buttons
+        // Age +/- buttons for settings
         document.getElementById('ageUp').addEventListener('click', function() {
             const ageInput = document.getElementById('childAge');
             const current = parseInt(ageInput.value) || 6;
@@ -774,12 +1307,23 @@
             if (current > 2) ageInput.value = current - 1;
         });
 
-        // Handle "Generate Another Story" button
-        newStoryBtn.addEventListener('click', function() {
-            storyOutput.style.display = 'none';
-            form.style.display = 'block';
-            window.scrollTo(0, 0);
-        });
+        // Back button handlers
+        const backFromOriginal = document.getElementById('backFromOriginal');
+        const backFromClassic = document.getElementById('backFromClassic');
+        const backFromClassicMixed = document.getElementById('backFromClassicMixed');
+        
+        if (backFromOriginal) {
+            backFromOriginal.addEventListener('click', backToStorySelection);
+        }
+        if (backFromClassic) {
+            backFromClassic.addEventListener('click', backToStorySelection);
+        }
+        if (backFromClassicMixed) {
+            backFromClassicMixed.addEventListener('click', backToStorySelection);
+        }
+
+        // Initialize the interface when page loads
+        initializeInterface();
     </script>
 </body>
 </html>

@@ -21,22 +21,6 @@ We are transitioning from a Flask web app to a **Native Android App** built with
 - **Database:** SQLite (local) → will need cloud DB for cross-device sync
 - **Environment:** python-dotenv for API key management
 
-## Project Structure (Current - Web MVP)
-```
-bedtime_story_app/
-├── app.py              # Flask backend with API routes
-├── auth.py             # Authentication utilities (password hashing, tokens)
-├── llm_config.py       # LLM settings and prompt templates (English only)
-├── translation.py      # Translation using Google Gemini API
-├── templates/
-│   └── index.html      # Web frontend interface
-├── static/
-│   └── style.css       # Web styling
-├── .env                # API keys (GROQ_API_KEY, GOOGLE_API_KEY)
-├── requirements.txt    # Python dependencies
-└── venv/               # Virtual environment
-```
-
 ## Project Structure (Target - Android + Web)
 ```
 bedtime_story_app/
@@ -60,13 +44,18 @@ bedtime_story_app/
 ```
 
 ## Key Features
-1. **Story Length:** 1-10 minutes reading time (converted to ~180 words/min)
-2. **Story Types:**
-   - Made Up: Original stories
-   - Classic: Traditional tales
-   - Mixed: Classic with user modifications
-3. **Languages:** English, Spanish, French, Portuguese, German, Italian (via translation)
-4. **Output:** Plain text stories
+1. **Story Length:** 1-12 minutes reading time (converted to ~180 words/min)
+2. **Overall flow**: Two-step flow: 1. Choose the story type. 2. Customize.
+3. **Story Types:**
+   - Original story: The app generates the stories based on the settings.
+   - Classic: Traditional tales from a pre-defined list.
+   - Classic with my awesome ideas: Select a classic story from the pre-defined list and combined with the inputs recieved (+ settings).
+4. **Customization:**
+    - Original story: Provide an optional input box so the user can enter ideas for the story.
+    - Classic: Show a collection of alphabetically ordered options in nice looking small cards. The first choice should be a button "Surprise me!" which will be a random selection of the pre-defined stories.
+    - Classic with my awesome ideas: Offer the same choice of classic (without the surprise button) + an input box where the user can input their ideas.
+4. **Languages:** English, Spanish, French, Portuguese, German, Italian (via translation)
+5. **Output:** Plain text stories
 
 ## Development Guidelines
 
@@ -77,10 +66,8 @@ bedtime_story_app/
 - Use type hints where helpful
 
 ### Frontend Standards
-- Keep JavaScript vanilla (no jQuery, React, etc.)
 - Mobile-responsive design
 - Minimal dependencies
-- Simple, functional UI (not overly styled)
 
 ### API Usage
 - Groq API key stored in .env file (GROQ_API_KEY)
@@ -92,9 +79,7 @@ bedtime_story_app/
 
 ### What NOT to Change
 - Don't modify `.env` file
-- Don't add complex frameworks (keep it simple)
 - Don't remove the word count estimation logic
-- Maintain Flask's simple structure (no blueprints needed yet)
 
 ## Current Limitations
 - Stories saved locally only (no cloud sync)
@@ -106,32 +91,21 @@ bedtime_story_app/
 ## Priority 1: Backend Refactoring (Required before Android)
 - [x] **Separate LLM configuration** - Extract prompts and LLM settings into `llm_config.py` ✓ DONE
 - [x] **User Authentication** - Email/password auth with secure password hashing ✓ DONE
+
+## Priority 2: Core Features
+- [x] **Settings Page** - ✅ DONE - User customizations for story personalization
+- [x] **Language Translation API** - ✅ DONE - Multi-language support via Google AI Studio  
+- [x] **Navigation Button Fix** - ✅ DONE - Fixed Step 2 navigation issues
+- [ ] **UX Flow Implementation** - Implement proper two-step story generation flow
+- [ ] **Login Form Enhancement** - Add enter key support for login/register forms
+
+## Priority 3: Android App
 - [ ] **Split app.py into modules** - Separate concerns into individual files:
   - `db.py` - Database setup, connection helper, init_db()
   - `routes/auth.py` - Authentication routes (register, login)
   - `routes/stories.py` - Story routes (generate, save, my-stories, update-rating)
   - `routes/settings.py` - Settings routes (get/save settings)
   - `app.py` - Main Flask app setup, imports routes
-
-## Priority 2: Core Features
-- [x] **Settings Page** - User customizations including:
-  - Default story duration
-  - Child age (affects vocabulary and themes)
-  - Story tone options: Funny, Soothing, Educational, Christian, Adventure, etc.
-  - Preferred language
-- [x] **Language via Translation API** - ✓ DONE (January 2026)
-  - Stories always generated in English (simpler prompts, better quality)
-  - Language preference moved to Settings page
-  - Translation via Google AI Studio (Gemini 2.0 Flash)
-  - Supports: English, Spanish, French, Portuguese, German, Italian
-- [ ] **UI Polish** - Improve overall aesthetics of the web interface
-- [ ] **Classic Tales Catalog** - JSON database of traditional stories:
-  - Grimm's fairy tales
-  - Aesop's fables
-  - Classic bedtime stories
-  - Searchable/browsable in-app
-
-## Priority 3: Android App
 - [ ] **Android Project Setup** - Create Kotlin Android project with Android Studio
 - [ ] **API Client** - Connect Android app to Flask backend
 - [ ] **Story Generation Screen** - Port story form to native Android UI
@@ -183,3 +157,4 @@ python app.py
 10. This is is not a prototype, although it is a simple app - prioritize functionality over perfection
 11. Maintain the simple architecture unless explicitly asked to scale up
 12. Always test that changes work with the Groq API integration
+13. Perform one logical change at a time: don't do massive changes to the code base in one single step, break the big changes down to managable and understandable sub-steps.

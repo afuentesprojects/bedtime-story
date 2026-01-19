@@ -1,0 +1,683 @@
+{
+  "tales": [
+    {
+      "id": "surprise",
+      "title": "Surprise me!",
+      "description": "Let me pick a random classic story for you",
+      "category": "random",
+      "age_range": "all"
+    },
+    {
+      "id": "three_little_pigs",
+      "title": "The Three Little Pigs",
+      "description": "Three pig brothers build houses of different materials to protect themselves from the big bad wolf",
+      "category": "fable",
+      "age_range": "3-8"
+    },
+    {
+      "id": "little_red_riding_hood",
+      "title": "Little Red Riding Hood",
+      "description": "A little girl in a red hood visits her grandmother and meets a cunning wolf",
+      "category": "fairy_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "goldilocks",
+      "title": "Goldilocks and the Three Bears",
+      "description": "A curious girl explores a house belonging to three bears",
+      "category": "fairy_tale",
+      "age_range": "3-7"
+    },
+    {
+      "id": "cinderella",
+      "title": "Cinderella",
+      "description": "A kind-hearted girl with a fairy godmother goes to the royal ball",
+      "category": "fairy_tale",
+      "age_range": "4-10"
+    },
+    {
+      "id": "sleeping_beauty",
+      "title": "Sleeping Beauty",
+      "description": "A princess falls into a deep sleep and is awakened by true love's kiss",
+      "category": "fairy_tale",
+      "age_range": "5-10"
+    },
+    {
+      "id": "hansel_and_gretel",
+      "title": "Hansel and Gretel",
+      "description": "Two children find a candy house in the forest owned by a witch",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "snow_white",
+      "title": "Snow White and the Seven Dwarfs",
+      "description": "A beautiful princess finds refuge with seven dwarfs while hiding from her evil stepmother",
+      "category": "fairy_tale",
+      "age_range": "5-10"
+    },
+    {
+      "id": "tortoise_and_hare",
+      "title": "The Tortoise and the Hare",
+      "description": "A slow but steady tortoise races against a fast but overconfident hare",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "ugly_duckling",
+      "title": "The Ugly Duckling",
+      "description": "A different-looking duckling discovers he's actually a beautiful swan",
+      "category": "fairy_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "jack_and_beanstalk",
+      "title": "Jack and the Beanstalk",
+      "description": "A boy climbs a magical beanstalk and discovers a giant's castle in the clouds",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "three_billy_goats",
+      "title": "The Three Billy Goats Gruff",
+      "description": "Three goats want to cross a bridge guarded by a mean troll",
+      "category": "fairy_tale",
+      "age_range": "3-7"
+    },
+    {
+      "id": "gingerbread_man",
+      "title": "The Gingerbread Man",
+      "description": "A gingerbread cookie comes to life and runs away from everyone who wants to eat him",
+      "category": "fairy_tale",
+      "age_range": "3-7"
+    },
+    {
+      "id": "little_mermaid",
+      "title": "The Little Mermaid",
+      "description": "A mermaid princess dreams of living on land and falls in love with a human prince",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "thumbelina",
+      "title": "Thumbelina",
+      "description": "A tiny girl the size of a thumb has adventures in the natural world",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "town_mouse_country_mouse",
+      "title": "The Town Mouse and the Country Mouse",
+      "description": "Two mice discover whether city life or country life is better",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "lion_and_mouse",
+      "title": "The Lion and the Mouse",
+      "description": "A tiny mouse helps a mighty lion, proving that even the smallest can be the greatest help",
+      "category": "fable",
+      "age_range": "3-7"
+    },
+    {
+      "id": "ant_and_grasshopper",
+      "title": "The Ant and the Grasshopper",
+      "description": "A hardworking ant prepares for winter while a grasshopper plays all summer",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "rapunzel",
+      "title": "Rapunzel",
+      "description": "A girl with long hair is trapped in a tower and saved by a brave prince",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "rumpelstiltskin",
+      "title": "Rumpelstiltskin",
+      "description": "A mysterious little man helps a miller's daughter spin straw into gold",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "beauty_and_beast",
+      "title": "Beauty and the Beast",
+      "description": "A kind girl sees past appearances to find love with a cursed beast",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "twelve_dancing_princesses",
+      "title": "The Twelve Dancing Princesses",
+      "description": "Twelve sisters sneak out at night to dance in a magical kingdom",
+      "category": "fairy_tale",
+      "age_range": "7-10"
+    },
+    {
+      "id": "puss_in_boots",
+      "title": "Puss in Boots",
+      "description": "A clever cat helps his master win a princess and a kingdom",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "bremen_town_musicians",
+      "title": "The Bremen Town Musicians",
+      "description": "Four aging animals band together and find a new purpose in life",
+      "category": "fairy_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "elves_and_shoemaker",
+      "title": "The Elves and the Shoemaker",
+      "description": "Magical elves help a poor shoemaker by making beautiful shoes at night",
+      "category": "fairy_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "princess_and_pea",
+      "title": "The Princess and the Pea",
+      "description": "A real princess is discovered by her sensitivity to a tiny pea under many mattresses",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "fisherman_and_wife",
+      "title": "The Fisherman and His Wife",
+      "description": "A magical fish grants wishes to a fisherman, but his wife wants more and more",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "little_match_girl",
+      "title": "The Little Match Girl",
+      "description": "A poor girl finds warmth and hope through magical visions from her matches",
+      "category": "fairy_tale",
+      "age_range": "7-10"
+    },
+    {
+      "id": "steadfast_tin_soldier",
+      "title": "The Steadfast Tin Soldier",
+      "description": "A one-legged toy soldier's brave adventures and love for a paper ballerina",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "wild_swans",
+      "title": "The Wild Swans",
+      "description": "A princess works to break the spell that turned her eleven brothers into swans",
+      "category": "fairy_tale",
+      "age_range": "7-10"
+    },
+    {
+      "id": "frog_prince",
+      "title": "The Frog Prince",
+      "description": "A princess learns the value of keeping promises when she befriends a frog",
+      "category": "fairy_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "emperor_new_clothes",
+      "title": "The Emperor's New Clothes",
+      "description": "An emperor is tricked by swindlers into believing he's wearing magnificent invisible clothes",
+      "category": "fairy_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "snow_queen",
+      "title": "The Snow Queen",
+      "description": "A brave girl journeys to rescue her friend from the cold-hearted Snow Queen",
+      "category": "fairy_tale",
+      "age_range": "7-10"
+    },
+    {
+      "id": "red_shoes",
+      "title": "The Red Shoes",
+      "description": "A girl learns about vanity and humility through her magical dancing shoes",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "nightingale",
+      "title": "The Nightingale",
+      "description": "An emperor learns to appreciate real beauty over artificial imitations",
+      "category": "fairy_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "fox_and_grapes",
+      "title": "The Fox and the Grapes",
+      "description": "A fox learns about accepting disappointment gracefully",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "goose_golden_eggs",
+      "title": "The Goose That Laid Golden Eggs",
+      "description": "A farmer learns that greed can destroy good fortune",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "boy_who_cried_wolf",
+      "title": "The Boy Who Cried Wolf",
+      "description": "A shepherd boy learns the consequences of lying and false alarms",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "crow_and_pitcher",
+      "title": "The Crow and the Pitcher",
+      "description": "A clever crow finds an innovative way to get water from a narrow pitcher",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "wind_and_sun",
+      "title": "The Wind and the Sun",
+      "description": "The wind and sun compete to see who can make a traveler remove his coat",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "dog_and_reflection",
+      "title": "The Dog and His Reflection",
+      "description": "A greedy dog loses his bone when he tries to grab his reflection's bone too",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "oak_and_reed",
+      "title": "The Oak and the Reed",
+      "description": "A mighty oak learns that flexibility can be stronger than stubbornness",
+      "category": "fable",
+      "age_range": "5-9"
+    },
+    {
+      "id": "mice_in_council",
+      "title": "The Mice in Council",
+      "description": "Mice learn that coming up with ideas is easier than carrying them out",
+      "category": "fable",
+      "age_range": "5-9"
+    },
+    {
+      "id": "fox_and_stork",
+      "title": "The Fox and the Stork",
+      "description": "A fox learns about treating others the way you want to be treated",
+      "category": "fable",
+      "age_range": "4-8"
+    },
+    {
+      "id": "midas_golden_touch",
+      "title": "King Midas and the Golden Touch",
+      "description": "A king learns that getting everything you wish for isn't always good",
+      "category": "myth",
+      "age_range": "6-10"
+    },
+    {
+      "id": "pandora_box",
+      "title": "Pandora's Box",
+      "description": "The first woman's curiosity releases troubles into the world, but also hope",
+      "category": "myth",
+      "age_range": "7-10"
+    },
+    {
+      "id": "noah_ark",
+      "title": "Noah's Ark",
+      "description": "Noah builds a great boat to save animals from a worldwide flood",
+      "category": "religious",
+      "age_range": "4-10"
+    },
+    {
+      "id": "david_goliath",
+      "title": "David and Goliath",
+      "description": "A small shepherd boy defeats a giant warrior with faith and a sling",
+      "category": "religious",
+      "age_range": "5-10"
+    },
+    {
+      "id": "jonah_whale",
+      "title": "Jonah and the Whale",
+      "description": "A man learns about obedience after being swallowed by a great fish",
+      "category": "religious",
+      "age_range": "5-10"
+    },
+    {
+      "id": "robin_hood",
+      "title": "Robin Hood",
+      "description": "A noble outlaw and his merry men help the poor in Sherwood Forest",
+      "category": "legend",
+      "age_range": "7-10"
+    },
+    {
+      "id": "king_arthur",
+      "title": "King Arthur and the Sword in the Stone",
+      "description": "A young boy proves he's destined to be king by pulling a sword from a stone",
+      "category": "legend",
+      "age_range": "7-10"
+    },
+    {
+      "id": "paul_bunyan",
+      "title": "Paul Bunyan and Babe the Blue Ox",
+      "description": "A giant lumberjack and his blue ox have incredible adventures across America",
+      "category": "tall_tale",
+      "age_range": "5-9"
+    },
+    {
+      "id": "john_henry",
+      "title": "John Henry",
+      "description": "A steel-driving man races against a machine to prove human strength and spirit",
+      "category": "tall_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "pecos_bill",
+      "title": "Pecos Bill",
+      "description": "A cowboy raised by coyotes tames the Wild West with his amazing skills",
+      "category": "tall_tale",
+      "age_range": "6-10"
+    },
+    {
+      "id": "johnny_appleseed",
+      "title": "Johnny Appleseed",
+      "description": "A kind man travels across America planting apple trees for future generations",
+      "category": "tall_tale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "stone_soup",
+      "title": "Stone Soup",
+      "description": "Clever travelers teach a village about sharing by making soup from a stone",
+      "category": "folktale",
+      "age_range": "4-8"
+    },
+    {
+      "id": "chicken_little",
+      "title": "Chicken Little",
+      "description": "A young chick thinks the sky is falling and causes a panic among farm animals",
+      "category": "folktale",
+      "age_range": "3-7"
+    },
+    {
+      "id": "little_engine_that_could",
+      "title": "The Little Engine That Could",
+      "description": "A small train engine succeeds where bigger engines failed through determination",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "velveteen_rabbit",
+      "title": "The Velveteen Rabbit",
+      "description": "A stuffed rabbit learns what it means to become real through a child's love",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "giving_tree",
+      "title": "The Giving Tree",
+      "description": "A tree's unconditional love for a boy throughout his entire life",
+      "category": "modern_classic",
+      "age_range": "4-10"
+    },
+    {
+      "id": "where_wild_things_are",
+      "title": "Where the Wild Things Are",
+      "description": "A boy's imagination takes him to a land of wild creatures",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "corduroy",
+      "title": "Corduroy",
+      "description": "A toy bear in a department store searches for his missing button",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "goodnight_moon",
+      "title": "Goodnight Moon",
+      "description": "A bunny says goodnight to everything in his room before falling asleep",
+      "category": "modern_classic",
+      "age_range": "2-6"
+    },
+    {
+      "id": "very_hungry_caterpillar",
+      "title": "The Very Hungry Caterpillar",
+      "description": "A caterpillar eats his way through the week and transforms into a butterfly",
+      "category": "modern_classic",
+      "age_range": "2-6"
+    },
+    {
+      "id": "rainbow_fish",
+      "title": "The Rainbow Fish",
+      "description": "A beautiful fish learns the joy of sharing and making friends",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "guess_how_much_i_love_you",
+      "title": "Guess How Much I Love You",
+      "description": "A little hare and big hare express their love for each other",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "love_you_forever",
+      "title": "Love You Forever",
+      "description": "A mother's enduring love for her son throughout his life",
+      "category": "modern_classic",
+      "age_range": "3-8"
+    },
+    {
+      "id": "chicka_chicka_boom_boom",
+      "title": "Chicka Chicka Boom Boom",
+      "description": "The letters of the alphabet climb up a coconut tree",
+      "category": "modern_classic",
+      "age_range": "2-6"
+    },
+    {
+      "id": "brown_bear_brown_bear",
+      "title": "Brown Bear, Brown Bear, What Do You See?",
+      "description": "Different colored animals see other animals in a rhythmic pattern",
+      "category": "modern_classic",
+      "age_range": "2-5"
+    },
+    {
+      "id": "caps_for_sale",
+      "title": "Caps for Sale",
+      "description": "A cap seller has a funny encounter with mischievous monkeys",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "mike_mulligan",
+      "title": "Mike Mulligan and His Steam Shovel",
+      "description": "A man and his steam shovel prove their worth in the modern world",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "make_way_ducklings",
+      "title": "Make Way for Ducklings",
+      "description": "A family of ducks finds the perfect place to raise their babies in Boston",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "curious_george",
+      "title": "Curious George",
+      "description": "A curious little monkey gets into all sorts of adventures",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "madeline",
+      "title": "Madeline",
+      "description": "A brave little girl in Paris has an adventure when she gets her appendix removed",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "runaway_bunny",
+      "title": "The Runaway Bunny",
+      "description": "A mother rabbit assures her little bunny of her love no matter where he goes",
+      "category": "modern_classic",
+      "age_range": "3-7"
+    },
+    {
+      "id": "ferdinand",
+      "title": "The Story of Ferdinand",
+      "description": "A gentle bull who prefers smelling flowers to fighting in the bullring",
+      "category": "modern_classic",
+      "age_range": "4-8"
+    },
+    {
+      "id": "little_house_big_woods",
+      "title": "Little House in the Big Woods",
+      "description": "A pioneer family's life in the Wisconsin wilderness",
+      "category": "classic_chapter",
+      "age_range": "6-10"
+    },
+    {
+      "id": "charlotte_web",
+      "title": "Charlotte's Web",
+      "description": "A spider saves a pig's life through her clever web messages",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "stuart_little",
+      "title": "Stuart Little",
+      "description": "A mouse born into a human family has big adventures in New York City",
+      "category": "classic_chapter",
+      "age_range": "6-10"
+    },
+    {
+      "id": "winnie_the_pooh",
+      "title": "Winnie-the-Pooh",
+      "description": "A boy and his stuffed bear have adventures in the Hundred Acre Wood",
+      "category": "classic_chapter",
+      "age_range": "5-9"
+    },
+    {
+      "id": "secret_garden",
+      "title": "The Secret Garden",
+      "description": "A spoiled girl discovers friendship and healing in a hidden garden",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "wizard_of_oz",
+      "title": "The Wonderful Wizard of Oz",
+      "description": "A girl and her dog journey through a magical land to get home",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "alice_wonderland",
+      "title": "Alice's Adventures in Wonderland",
+      "description": "A girl falls down a rabbit hole into a world of nonsense and magic",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "peter_pan",
+      "title": "Peter Pan",
+      "description": "The boy who never grows up takes children on adventures to Neverland",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "jungle_book",
+      "title": "The Jungle Book",
+      "description": "A boy raised by wolves learns the laws of the jungle",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "black_beauty",
+      "title": "Black Beauty",
+      "description": "The autobiography of a horse and his various owners",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "anne_green_gables",
+      "title": "Anne of Green Gables",
+      "description": "An imaginative orphan girl finds a loving home with an elderly brother and sister",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "heidi",
+      "title": "Heidi",
+      "description": "A girl brings joy and healing to her grandfather in the Swiss Alps",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "little_women",
+      "title": "Little Women",
+      "description": "Four sisters grow up during the Civil War era in New England",
+      "category": "classic_chapter",
+      "age_range": "9-12"
+    },
+    {
+      "id": "tom_sawyer",
+      "title": "The Adventures of Tom Sawyer",
+      "description": "A mischievous boy's adventures along the Mississippi River",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "treasure_island",
+      "title": "Treasure Island",
+      "description": "A boy joins pirates on a dangerous quest for buried treasure",
+      "category": "classic_chapter",
+      "age_range": "9-12"
+    },
+    {
+      "id": "swiss_family_robinson",
+      "title": "Swiss Family Robinson",
+      "description": "A family shipwrecked on an island creates a new life in the wilderness",
+      "category": "classic_chapter",
+      "age_range": "8-12"
+    },
+    {
+      "id": "robinson_crusoe",
+      "title": "Robinson Crusoe",
+      "description": "A man survives alone on a desert island for many years",
+      "category": "classic_chapter",
+      "age_range": "9-12"
+    },
+    {
+      "id": "wind_in_willows",
+      "title": "The Wind in the Willows",
+      "description": "Animal friends have adventures along the riverbank",
+      "category": "classic_chapter",
+      "age_range": "7-10"
+    },
+    {
+      "id": "just_so_stories",
+      "title": "Just So Stories",
+      "description": "Imaginative tales explaining how animals got their distinctive features",
+      "category": "classic_short",
+      "age_range": "5-9"
+    },
+    {
+      "id": "doctor_dolittle",
+      "title": "Doctor Dolittle",
+      "description": "A doctor who can talk to animals has amazing adventures",
+      "category": "classic_chapter",
+      "age_range": "6-10"
+    },
+    {
+      "id": "mary_poppins",
+      "title": "Mary Poppins",
+      "description": "A magical nanny brings wonder and order to the Banks family",
+      "category": "classic_chapter",
+      "age_range": "6-10"
+    }
+  ]
+}

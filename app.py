@@ -3,7 +3,7 @@ import os
 import sqlite3
 from groq import Groq
 from dotenv import load_dotenv
-from llm_config import MODEL_NAME, TEMPERATURE, MAX_TOKENS, SYSTEM_PROMPT, build_story_prompt
+from llm_config import MODEL_NAME, TEMPERATURE, MAX_TOKENS, SYSTEM_PROMPT, build_story_prompt, get_random_classic_tale
 from auth import hash_password, verify_password, generate_token
 from translation import translate_story, SUPPORTED_LANGUAGES
 
@@ -88,11 +88,31 @@ init_db()
 # Initialize Groq client
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
-def generate_story(story_type, length_minutes, modifications="", settings=None):
+def generate_story(story_type, length_minutes, modifications="", settings=None, classic_tale_id=None):
     """Generate a bedtime story using Groq API (always in English)"""
 
+    # Handle classic tale selection
+    classic_tale_title = None
+    if classic_tale_id == "surprise":
+        # Get random tale
+        random_tale = get_random_classic_tale()
+        if random_tale:
+            classic_tale_title = random_tale['title']
+    elif classic_tale_id and classic_tale_id != "surprise":
+        # Load specific tale title
+        try:
+            import json
+            with open('classic_tales.json', 'r', encoding='utf-8') as f:
+                tales_data = json.load(f)
+            for tale in tales_data['tales']:
+                if tale['id'] == classic_tale_id:
+                    classic_tale_title = tale['title']
+                    break
+        except Exception:
+            pass  # Continue without specific tale if error
+
     # Build prompt using config (always English)
-    prompt = build_story_prompt(story_type, length_minutes, modifications, settings)
+    prompt = build_story_prompt(story_type, length_minutes, modifications, settings, classic_tale_title)
 
     try:
         # Call Groq API with settings from llm_config
@@ -123,6 +143,7 @@ def generate():
     story_type = data.get('story_type')
     length = int(data.get('length', 5))
     modifications = data.get('modifications', '')
+    classic_tale_id = data.get('classic_tale_id')
 
     # Fetch user settings if logged in
     user_settings = None
@@ -145,7 +166,7 @@ def generate():
             pass  # Continue without settings if there's an error
 
     # Generate story in English
-    result = generate_story(story_type, length, modifications, user_settings)
+    result = generate_story(story_type, length, modifications, user_settings, classic_tale_id)
 
     # Translate if needed
     if result.get('success') and preferred_language != "English":
@@ -454,6 +475,17 @@ def update_rating():
 def get_languages():
     """Get list of supported languages for translation."""
     return jsonify({"success": True, "languages": SUPPORTED_LANGUAGES})
+
+@app.route('/classic-tales', methods=['GET'])
+def get_classic_tales():
+    """Get list of available classic tales."""
+    try:
+        import json
+        with open('classic_tales.json', 'r', encoding='utf-8') as f:
+            tales_data = json.load(f)
+        return jsonify({"success": True, "tales": tales_data["tales"]})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
 
 
 if __name__ == '__main__':
