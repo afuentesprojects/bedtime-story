@@ -96,7 +96,6 @@
                     <p class="section-description">Leave empty for a surprise, or describe your idea...</p>
                     <textarea id="originalTopic" placeholder="e.g., 'A brave mouse knight' or 'Dragons in space'" rows="3"></textarea>
                     <button type="button" class="generate-btn" id="generateOriginal">Generate Story</button>
-                    <div class="auto-generate-hint">Or wait 3 seconds for automatic generation...</div>
                 </div>
 
                 <!-- Classic Tale Selection -->
@@ -366,7 +365,6 @@
         let currentStoryType = null;
         let selectedClassicTale = null;
         let selectedClassicTaleMixed = null;
-        let autoGenerateTimer = null;
         let allTales = [];
         let currentStoryData = {};
         let selectedRating = 0;
@@ -387,7 +385,6 @@
             // Clear previous selections
             storyTypeCards.forEach(card => card.classList.remove('selected'));
             hideAllCustomizations();
-            clearAutoGenerateTimer();
 
             // Set current selection
             currentStoryType = storyType;
@@ -424,7 +421,6 @@
         function showOriginalCustomization() {
             originalCustomization.style.display = 'block';
             setTimeout(() => originalCustomization.classList.add('show'), 10);
-            startAutoGenerateTimer();
         }
 
         function showClassicCustomization() {
@@ -458,40 +454,11 @@
                 if (storyTypeCards) {
                     storyTypeCards.forEach(card => card.classList.remove('selected'));
                 }
-                
-                // Clear any timer
-                clearAutoGenerateTimer();
             } catch (error) {
                 console.error('Error in backToStorySelection:', error);
             }
         }
 
-        // =============================================================================
-        // AUTO-GENERATION TIMER FOR ORIGINAL STORIES
-        // =============================================================================
-        
-        function startAutoGenerateTimer() {
-            clearAutoGenerateTimer();
-            autoGenerateTimer = setTimeout(() => {
-                if (currentStoryType === 'original') {
-                    generateStory('original', originalTopic.value || '');
-                }
-            }, 3000); // 3 second delay
-        }
-
-        function clearAutoGenerateTimer() {
-            if (autoGenerateTimer) {
-                clearTimeout(autoGenerateTimer);
-                autoGenerateTimer = null;
-            }
-        }
-
-        // Reset timer when user types in original topic
-        originalTopic.addEventListener('input', () => {
-            if (currentStoryType === 'original') {
-                startAutoGenerateTimer();
-            }
-        });
 
         // =============================================================================
         // CLASSIC TALES BROWSER AND SEARCH
@@ -615,7 +582,6 @@
             // Clear previous results
             hideAllSections();
             loading.style.display = 'block';
-            clearAutoGenerateTimer();
 
             // Get length from the appropriate input based on story type
             let lengthValue;
@@ -765,12 +731,6 @@
             });
         });
 
-        // Original Topic Input - Reset Auto-Timer
-        originalTopic.addEventListener('input', () => {
-            if (currentStoryType === 'original') {
-                startAutoGenerateTimer();
-            }
-        });
 
         // Generate Buttons
         generateOriginal.addEventListener('click', () => {

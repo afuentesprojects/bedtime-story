@@ -158,3 +158,4 @@ python app.py
 11. Maintain the simple architecture unless explicitly asked to scale up
 12. Always test that changes work with the Groq API integration
 13. Perform one logical change at a time: don't do massive changes to the code base in one single step, break the big changes down to managable and understandable sub-steps.
+14. When accomplishing a task ALWAYS update the .\tasks\todo.md
