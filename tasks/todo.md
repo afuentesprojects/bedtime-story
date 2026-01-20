@@ -616,8 +616,56 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY
 ### Lessons Learned
 *Add notes here as you progress*
 
-- ...
+- **January 20, 2026**: Completed Expo project cleanup - Simple, incremental changes work best for mobile development
+- Template removal was straightforward - Removed all demo content, tabs, and unused components
+- Folder structure setup prepares for organized development (services/, app/stories/, app/auth/)
 
 ---
 
-*Last updated: January 2026*
+## Recent Progress - January 20, 2026
+
+### ✅ Phase 0 Cleanup Completed
+**Goal: Clean up Expo project template for bedtime story app development**
+
+#### Completed Tasks:
+- [x] **Remove template demo content from home screen**
+  - Replaced complex template layout with simple "Bedtime Stories" interface
+  - Added placeholder for three story types: Original, Classic, Remix
+  - Created clean, centered layout with proper styling
+
+- [x] **Remove explore tab and modal screen**
+  - Removed explore tab from navigation (app/(tabs)/_layout.tsx)
+  - Deleted explore.tsx file completely
+  - Deleted modal.tsx file completely
+  - Now has clean single-tab interface
+
+- [x] **Update app.json name and description**
+  - Changed name from "bedtime-stories" to "Bedtime Story Generator"
+  - Updated slug to "bedtime-story-generator"
+  - Keeps existing bundle identifiers and configuration
+
+- [x] **Remove unused template components**
+  - Deleted hello-wave.tsx (animated component)
+  - Deleted parallax-scroll-view.tsx (complex scroll component)
+  - Deleted external-link.tsx (demo link component)
+  - Deleted ui/collapsible.tsx (demo UI component)
+
+- [x] **Create basic folder structure for bedtime stories app**
+  - Created services/ folder for API and auth logic
+  - Created app/stories/ folder for story-related screens
+  - Created app/auth/ folder for authentication screens
+  - Added placeholder api.ts file in services/
+
+#### Current State:
+- ✅ Clean Expo project ready for development
+- ✅ Simple home screen showing app purpose
+- ✅ Proper folder structure for organized development
+- ✅ All template clutter removed
+- ✅ App properly named and configured
+
+#### Next Steps:
+Ready to begin Phase 2.1 - Building the actual story type selection UI on the home screen.
+
+---
+
+*Last updated: January 20, 2026*
