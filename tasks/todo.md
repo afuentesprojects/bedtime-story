@@ -664,7 +664,188 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY
 - ✅ App properly named and configured
 
 #### Next Steps:
-Ready to begin Phase 2.1 - Building the actual story type selection UI on the home screen.
+Ready to begin Phase 2.2 - Building story customization screens and navigation.
+
+---
+
+## Recent Progress - January 20, 2026 (Evening)
+
+### ✅ Phase 2.1 Story Type Selection Completed
+**Goal: Transform home screen into interactive story type selection**
+
+#### Completed Tasks:
+- [x] **Copied story type icons to mobile assets**
+  - Successfully moved original-story.webp, classic-story.webp, and classic-with-my-own-touch.webp
+  - Icons now available in bedtime-stories/assets/images/ for React Native
+
+- [x] **Created StoryTypeCard reusable component**
+  - Built interactive card component with proper theming support
+  - Includes icon display, title, description, and touch interactions
+  - Added proper styling with shadows, borders, and responsive layout
+  - Supports both light and dark themes
+
+- [x] **Updated home screen with beautiful story type cards**
+  - Replaced text placeholders with three interactive StoryTypeCard components
+  - Added meaningful descriptions for each story type
+  - Implemented proper navigation placeholders (Alert for now)
+  - Updated layout styling for better visual hierarchy
+
+- [x] **Tested app functionality**
+  - App passes linting checks with no errors
+  - App starts successfully without build errors
+  - All components render correctly
+
+#### Current State:
+- ✅ Beautiful, interactive home screen with visual story type selection
+- ✅ Professional card-based UI that appeals to parents and children
+- ✅ Proper component structure for future navigation implementation
+- ✅ Themed design system working correctly
+- ✅ Icons properly integrated and displaying
+
+#### Impact:
+The home screen now provides an engaging, visual interface that clearly communicates the app's three core story creation modes. The professional design and smooth interactions create a positive first impression for users.
+
+---
+
+## Recent Progress - January 20, 2026 (Late Evening)
+
+### ✅ Phase 2.1B Child-Friendly UI Improvements Completed
+**Goal: Transform app into more engaging, child-appropriate interface**
+
+#### Completed Tasks:
+- [x] **Made cards taller and images more prominent**
+  - Increased card height from compact to minimum 120px with better vertical spacing
+  - Enlarged story icons from 60x60 to 100x100 for better visual impact
+  - Enhanced shadows and border radius (20px) for more appealing design
+  - Increased padding and spacing throughout for better touch targets
+
+- [x] **Removed AI references and improved copy**
+  - Changed "Let AI create..." to "Create a unique story based on your preferences and ideas"
+  - Kept all descriptions child-friendly and focused on the user experience
+  - Removed technical jargon and made language more accessible
+
+- [x] **Added child-friendly rounded typography**
+  - Implemented ui-rounded font for iOS (child-friendly rounded system font)
+  - Added fallback sans-serif for Android and web platforms
+  - Applied ChildFriendlyFont to all story cards and new screens
+  - Fonts are system-based so no loading issues or dependencies
+
+- [x] **Added Settings and My Stories navigation tabs**
+  - Created proper 3-tab navigation: Home, My Stories, Settings
+  - Added appropriate icons: house.fill, book.fill, gear
+  - Maintains haptic feedback and theme support
+  - Professional tab bar layout for better UX
+
+- [x] **Created dummy Settings and My Stories screens**
+  - My Stories screen: Clean empty state with helpful messaging
+  - Settings screen: Organized sections for preferences and account
+  - Both screens use child-friendly fonts and proper spacing
+  - Version display and professional layout structure
+
+#### Current State:
+- ✅ Much more child-friendly visual design with prominent images
+- ✅ Taller, more touchable cards with better visual hierarchy  
+- ✅ Rounded typography throughout for softer, friendlier feel
+- ✅ Complete 3-screen navigation structure ready for development
+- ✅ No AI references - focuses on user creativity and preferences
+- ✅ Professional empty states and placeholder content
+- ✅ App passes all linting checks and starts without errors
+
+#### Impact:
+The app now provides a much more engaging, visually-appealing interface specifically designed for a children's app. The larger images, rounded fonts, and child-friendly language create a welcoming environment for both kids and parents. The navigation structure is now complete and ready for the next phase of development.
+
+---
+
+## Recent Progress - January 20, 2026 (Final Evening Update)
+
+### ✅ Phase 2.1D Background Image Card Redesign Completed
+**Goal: Fix layout issues and make images truly prominent using background design**
+
+#### Problem Solved:
+Previous design had cards that were too large (160px), text squished to one side, and wasted white space despite large 130x130 images.
+
+#### Complete Redesign Approach:
+- [x] **Redesigned cards with image backgrounds**
+  - **Removed side-by-side layout** that wasted horizontal space
+  - **Used ImageBackground component** for full-card image coverage
+  - **Images now fill entire card area** - truly dominant visual element
+  - **Better use of real estate** with no wasted space
+
+- [x] **Added readable text overlay**
+  - **Semi-transparent dark overlay** (rgba(0,0,0,0.5)) behind text
+  - **White text on dark background** for excellent contrast and readability
+  - **Text positioned at bottom** with proper padding (16px)
+  - **Professional overlay design** commonly seen in modern apps
+
+- [x] **Optimized card dimensions**
+  - **Reduced height** from 160px to 110px (much more reasonable)
+  - **Fixed height instead of minHeight** for consistent layout
+  - **Added overflow: hidden** for clean rounded corner clipping
+  - **Better mobile proportions** that don't dominate screen
+
+#### Visual Impact:
+- **Images are now 100% prominent** - they ARE the card background
+- **No wasted white space** - every pixel serves the design
+- **Professional overlay text** that's completely readable
+- **Compact, efficient cards** that showcase the story types beautifully
+- **Modern, engaging design** that appeals to both kids and parents
+
+#### Current State:
+- ✅ Beautiful background image cards with 110px height
+- ✅ Story type images fill entire card area with overlay text
+- ✅ Excellent text readability with white text on dark overlay
+- ✅ No wasted space - efficient use of screen real estate
+- ✅ Professional design that feels modern and child-friendly
+- ✅ App passes all linting checks and maintains functionality
+
+#### Impact:
+The app now has a visually stunning interface where the story type images are impossible to miss. The background image approach ensures images are truly prominent while maintaining excellent text readability. The design is much more space-efficient and creates a modern, professional appearance.
+
+---
+
+## Recent Progress - January 20, 2026 (Final Mobile UI Completion)
+
+### ✅ Phase 2.1E Final Mobile UI Polish Completed  
+**Goal: Complete the mobile UI with clean design and working navigation**
+
+#### Final Improvements:
+- [x] **Simplified cards to title-only design**
+  - Removed description text for cleaner, more focused cards
+  - Increased title font size to 18px with bold weight
+  - Centered title text both horizontally and vertically
+  - Card text section height optimized to 45px
+
+- [x] **Perfected card layout with image separation**
+  - Image section: 140px height (clean, unobstructed view)
+  - Text section: 45px height with dark violet background (#5b2c87)
+  - Total card height: 185px for optimal mobile proportions
+  - White text on dark violet for excellent contrast
+
+- [x] **Implemented dark violet app theme**
+  - Entire app background changed to dark violet (#5b2c87)
+  - All text colors updated to white for consistency
+  - Tab bar styling updated for dark background
+  - Cohesive theme throughout all screens
+
+- [x] **Fixed navigation tab icons**
+  - **Root cause identified**: Missing icon mappings for Android/Web
+  - Added icon mappings in `components/ui/icon-symbol.tsx`:
+    - `book.closed.fill` → `menu-book` (My Stories)
+    - `gearshape.fill` → `settings` (Settings)
+  - All navigation icons now visible on all platforms
+
+#### Final State:
+- ✅ **Beautiful, minimal cards** with prominent images and clean titles
+- ✅ **Perfect image visibility** - no text overlay obstruction
+- ✅ **Professional dark violet theme** throughout entire app
+- ✅ **Working 3-tab navigation** with visible icons on all platforms
+- ✅ **Ready for next development phase** - story customization screens
+
+#### Impact:
+The mobile UI is now complete with a professional, child-friendly design. The cards showcase story types beautifully with prominent images and clear titles. The dark violet theme creates a cohesive, modern appearance while maintaining excellent readability. The navigation is fully functional with proper icons across all platforms.
+
+#### Next Phase Ready:
+**Phase 2.2** - Story customization screens and actual story generation flow implementation.
 
 ---
 

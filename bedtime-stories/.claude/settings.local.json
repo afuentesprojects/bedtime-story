@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(/C:\\Users\\direc\\Desktop\\PersonalProjects\\bedtime_story_app\\tasks/**)",
+      "Read(/C:\\Users\\direc\\Desktop\\PersonalProjects\\bedtime_story_app/**)",
+      "Read(/C:\\Users\\direc\\Desktop\\PersonalProjects\\bedtime_story_app/**)",
+      "Read(/C:\\Users\\direc\\Desktop\\PersonalProjects\\bedtime_story_app/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

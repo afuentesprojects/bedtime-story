@@ -28,3 +28,4 @@ instance/
 # Others
 DEVELOP.md
 tasks/todo-old.md
+node_modules/

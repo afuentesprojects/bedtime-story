@@ -13,7 +13,10 @@
       "Bash(source:*)",
       "Bash(pip install:*)",
       "Bash(timeout:*)",
-      "Bash(dir)"
+      "Bash(dir)",
+      "Bash(copy:*)",
+      "Read(/C:\\c\\Users\\direc\\Desktop\\PersonalProjects/**)",
+      "Bash(npm run lint)"
     ]
   }
 }
