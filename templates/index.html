@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bedtime Story Generator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
+
 <body>
     <div class="container">
         <h1>🌙 Bedtime Story Generator</h1>
@@ -46,10 +48,11 @@
         <!-- Story Creation Interface -->
         <div class="story-creator">
             <h2 id="mainHeader">What kind of story tonight?</h2>
-            
+
             <!-- Step 1: Story Type Selection -->
             <div class="story-type-selection">
-                <div class="story-type-card" data-type="original" style="background-image: url('{{ url_for('static', filename='images/icons/original-story.webp') }}')">
+                <div class="story-type-card" data-type="original"
+                    style="background-image: url('{{ url_for('static', filename='images/icons/original-story.webp') }}')">
                     <div class="card-overlay">
                         <h3>Original Story</h3>
                         <p>Create something completely new</p>
@@ -57,7 +60,8 @@
                     </div>
                 </div>
 
-                <div class="story-type-card" data-type="classic" style="background-image: url('{{ url_for('static', filename='images/icons/classic-story.webp') }}')">
+                <div class="story-type-card" data-type="classic"
+                    style="background-image: url('{{ url_for('static', filename='images/icons/classic-story.webp') }}')">
                     <div class="card-overlay">
                         <h3>Classic Tale</h3>
                         <p>Tell a timeless favorite</p>
@@ -65,7 +69,8 @@
                     </div>
                 </div>
 
-                <div class="story-type-card" data-type="classic_mixed" style="background-image: url('{{ url_for('static', filename='images/icons/classic-with-my-own-touch.webp') }}')">
+                <div class="story-type-card" data-type="classic_mixed"
+                    style="background-image: url('{{ url_for('static', filename='images/icons/classic-with-my-own-touch.webp') }}')">
                     <div class="card-overlay">
                         <h3>Classic + My Ideas</h3>
                         <p>Remix a classic with your twist</p>
@@ -80,7 +85,7 @@
                 <div class="customization-section" id="originalCustomization" style="display: none;">
                     <button type="button" class="back-btn" id="backFromOriginal">← Back to Story Types</button>
                     <h2 class="step-header">✨ Create Your Original Story</h2>
-                    
+
                     <!-- Story Length Selector -->
                     <div class="length-section">
                         <label for="length">Story Length:</label>
@@ -91,10 +96,11 @@
                             <span class="length-label">minutes</span>
                         </div>
                     </div>
-                    
+
                     <h3>What should the story be about?</h3>
                     <p class="section-description">Leave empty for a surprise, or describe your idea...</p>
-                    <textarea id="originalTopic" placeholder="e.g., 'A brave mouse knight' or 'Dragons in space'" rows="3"></textarea>
+                    <textarea id="originalTopic" placeholder="e.g., 'A brave mouse knight' or 'Dragons in space'"
+                        rows="3"></textarea>
                     <button type="button" class="generate-btn" id="generateOriginal">Generate Story</button>
                 </div>
 
@@ -102,18 +108,19 @@
                 <div class="customization-section" id="classicCustomization" style="display: none;">
                     <button type="button" class="back-btn" id="backFromClassic">← Back to Story Types</button>
                     <h2 class="step-header">📚 Choose Your Classic Tale</h2>
-                    
+
                     <!-- Story Length Selector -->
                     <div class="length-section">
                         <label for="lengthClassic">Story Length:</label>
                         <div class="length-input-wrapper">
                             <button type="button" class="length-btn" id="lengthDownClassic">−</button>
-                            <input type="number" id="lengthClassic" name="lengthClassic" min="1" max="30" value="5" required readonly>
+                            <input type="number" id="lengthClassic" name="lengthClassic" min="1" max="30" value="5"
+                                required readonly>
                             <button type="button" class="length-btn" id="lengthUpClassic">+</button>
                             <span class="length-label">minutes</span>
                         </div>
                     </div>
-                    
+
                     <h3>Choose your classic tale</h3>
                     <div class="classic-search">
                         <input type="search" id="taleSearch" placeholder="Search tales..." />
@@ -122,25 +129,27 @@
                     <div class="tales-browser" id="talesBrowser">
                         <!-- Classic tales will be loaded here -->
                     </div>
-                    <button type="button" class="generate-btn" id="generateClassic" style="display: none;">Generate Story</button>
+                    <button type="button" class="generate-btn" id="generateClassic" style="display: none;">Generate
+                        Story</button>
                 </div>
 
                 <!-- Classic + Ideas Options -->
                 <div class="customization-section" id="classicMixedCustomization" style="display: none;">
                     <button type="button" class="back-btn" id="backFromClassicMixed">← Back to Story Types</button>
                     <h2 class="step-header">🎭 Remix a Classic Story</h2>
-                    
+
                     <!-- Story Length Selector -->
                     <div class="length-section">
                         <label for="lengthClassicMixed">Story Length:</label>
                         <div class="length-input-wrapper">
                             <button type="button" class="length-btn" id="lengthDownClassicMixed">−</button>
-                            <input type="number" id="lengthClassicMixed" name="lengthClassicMixed" min="1" max="30" value="5" required readonly>
+                            <input type="number" id="lengthClassicMixed" name="lengthClassicMixed" min="1" max="30"
+                                value="5" required readonly>
                             <button type="button" class="length-btn" id="lengthUpClassicMixed">+</button>
                             <span class="length-label">minutes</span>
                         </div>
                     </div>
-                    
+
                     <h3>Pick your classic tale</h3>
                     <div class="classic-search">
                         <input type="search" id="taleSearchMixed" placeholder="Search tales..." />
@@ -148,10 +157,11 @@
                     <div class="tales-browser" id="talesBrowserMixed">
                         <!-- Classic tales will be loaded here -->
                     </div>
-                    
+
                     <div class="modification-section" id="modificationSection" style="display: none;">
                         <h3>What's your awesome twist?</h3>
-                        <textarea id="classicModifications" placeholder="e.g., 'Make Little Red Riding Hood a space explorer'" rows="3"></textarea>
+                        <textarea id="classicModifications"
+                            placeholder="e.g., 'Make Little Red Riding Hood a space explorer'" rows="3"></textarea>
                         <button type="button" class="generate-btn" id="generateClassicMixed">Generate Story</button>
                     </div>
                 </div>
@@ -166,6 +176,45 @@
         <!-- Story Output -->
         <div id="storyOutput" style="display: none;">
             <h2 id="storyTitle"></h2>
+
+            <!-- Audio Narration Controls -->
+            <div id="narrationControls" class="narration-controls">
+                <div class="narration-header">
+                    <h3>🎧 Audio Narration</h3>
+                    <span id="narrationStatus" class="narration-status">Ready</span>
+                </div>
+
+                <div class="narration-buttons">
+                    <button type="button" id="playPauseBtn" class="narration-btn play-btn">
+                        <span id="playPauseIcon">▶️</span> <span id="playPauseText">Play</span>
+                    </button>
+                    <button type="button" id="stopBtn" class="narration-btn stop-btn">
+                        ⏹️ Stop
+                    </button>
+                </div>
+
+                <div class="narration-settings">
+                    <div class="narration-control">
+                        <label for="voiceSelect">🎤 Voice:</label>
+                        <select id="voiceSelect" class="narration-select">
+                            <option value="">Loading voices...</option>
+                        </select>
+                    </div>
+
+                    <div class="narration-control">
+                        <label for="speedControl">⏩ Speed:</label>
+                        <input type="range" id="speedControl" min="0.5" max="2" step="0.1" value="1"
+                            class="narration-slider">
+                        <span id="speedValue">1.0x</span>
+                    </div>
+                </div>
+
+                <div id="narrationUnsupported" class="narration-unsupported" style="display: none;">
+                    ⚠️ Audio narration is not supported in your browser. Please use Chrome, Safari, or Edge for this
+                    feature.
+                </div>
+            </div>
+
             <div id="storyText"></div>
 
             <!-- Save Story Section (only visible when logged in) -->
@@ -197,7 +246,8 @@
         <!-- Settings Section -->
         <div id="settingsSection" style="display: none;">
             <h2>⚙️ Story Settings</h2>
-            <p class="settings-description">Customize how your stories are generated. These preferences will be used every time you create a new story.</p>
+            <p class="settings-description">Customize how your stories are generated. These preferences will be used
+                every time you create a new story.</p>
 
             <!-- Child's Age Card -->
             <div class="settings-card">
@@ -205,7 +255,8 @@
                     <span class="settings-icon">👶</span>
                     <h3>Child's Age</h3>
                 </div>
-                <p class="settings-card-description">Stories will be tailored to this age level (vocabulary, themes, length).</p>
+                <p class="settings-card-description">Stories will be tailored to this age level (vocabulary, themes,
+                    length).</p>
                 <div class="age-input-wrapper">
                     <button type="button" class="age-btn" id="ageDown">−</button>
                     <input type="number" id="childAge" min="2" max="10" value="6" readonly>
@@ -220,13 +271,17 @@
                     <span class="settings-icon">🎭</span>
                     <h3>Story Tone</h3>
                 </div>
-                <p class="settings-card-description">Select the mood and style for your stories (pick as many as you like).</p>
+                <p class="settings-card-description">Select the mood and style for your stories (pick as many as you
+                    like).</p>
                 <div class="checkbox-grid" id="tonesGroup">
                     <label class="checkbox-label"><input type="checkbox" name="tone" value="Funny"> 😄 Funny</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Soothing"> 😌 Soothing</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Educational"> 📚 Educational</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Soothing"> 😌
+                        Soothing</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Educational"> 📚
+                        Educational</label>
                     <label class="checkbox-label"><input type="checkbox" name="tone" value="Fable"> 🦊 Fable</label>
-                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Adventure"> ⚔️ Adventure</label>
+                    <label class="checkbox-label"><input type="checkbox" name="tone" value="Adventure"> ⚔️
+                        Adventure</label>
                     <label class="checkbox-label"><input type="checkbox" name="tone" value="Magical"> ✨ Magical</label>
                 </div>
                 <div class="custom-tone-wrapper">
@@ -243,20 +298,29 @@
                 </div>
                 <p class="settings-card-description">What does your child love? Stories will feature these themes.</p>
                 <div class="checkbox-grid topics-grid" id="topicsGroup">
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Animals"> 🐾 Animals</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Dinosaurs"> 🦕 Dinosaurs</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Animals"> 🐾
+                        Animals</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Dinosaurs"> 🦕
+                        Dinosaurs</label>
                     <label class="checkbox-label"><input type="checkbox" name="topic" value="Space"> 🚀 Space</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Princess"> 👑 Princess</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Pirates"> 🏴‍☠️ Pirates</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Superheroes"> 🦸 Superheroes</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Fantasy"> 🧙 Fantasy</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Princess"> 👑
+                        Princess</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Pirates"> 🏴‍☠️
+                        Pirates</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Superheroes"> 🦸
+                        Superheroes</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Fantasy"> 🧙
+                        Fantasy</label>
                     <label class="checkbox-label"><input type="checkbox" name="topic" value="Nature"> 🌳 Nature</label>
                     <label class="checkbox-label"><input type="checkbox" name="topic" value="Cars"> 🚗 Cars</label>
                     <label class="checkbox-label"><input type="checkbox" name="topic" value="Sports"> ⚽ Sports</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Family"> 👨‍👩‍👧 Family</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Friendship"> 🤝 Friendship</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Family"> 👨‍👩‍👧
+                        Family</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Friendship"> 🤝
+                        Friendship</label>
                     <label class="checkbox-label"><input type="checkbox" name="topic" value="School"> 🏫 School</label>
-                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Siblings"> 👫 Siblings</label>
+                    <label class="checkbox-label"><input type="checkbox" name="topic" value="Siblings"> 👫
+                        Siblings</label>
                 </div>
             </div>
 
@@ -292,7 +356,7 @@
         // =============================================================================
         // DOM ELEMENTS - ALL DECLARED AT TOP TO ENSURE AVAILABILITY
         // =============================================================================
-        
+
         // Story creation elements
         const storyTypeCards = document.querySelectorAll('.story-type-card');
         const loading = document.getElementById('loading');
@@ -306,7 +370,7 @@
         const originalCustomization = document.getElementById('originalCustomization');
         const classicCustomization = document.getElementById('classicCustomization');
         const classicMixedCustomization = document.getElementById('classicMixedCustomization');
-        
+
         // Input elements
         const originalTopic = document.getElementById('originalTopic');
         const taleSearch = document.getElementById('taleSearch');
@@ -315,7 +379,7 @@
         const talesBrowserMixed = document.getElementById('talesBrowserMixed');
         const classicModifications = document.getElementById('classicModifications');
         const modificationSection = document.getElementById('modificationSection');
-        
+
         // Generate buttons
         const generateOriginal = document.getElementById('generateOriginal');
         const generateClassic = document.getElementById('generateClassic');
@@ -336,19 +400,19 @@
         const myStoriesBtn = document.getElementById('myStoriesBtn');
         const loginError = document.getElementById('loginError');
         const registerError = document.getElementById('registerError');
-        
+
         // Save story elements
         const saveSection = document.getElementById('saveSection');
         const starRating = document.getElementById('starRating');
         const stars = document.querySelectorAll('.star');
         const saveStoryBtn = document.getElementById('saveStoryBtn');
         const saveMessage = document.getElementById('saveMessage');
-        
+
         // My stories elements
         const myStoriesSection = document.getElementById('myStoriesSection');
         const storiesList = document.getElementById('storiesList');
         const backToGeneratorBtn = document.getElementById('backToGeneratorBtn');
-        
+
         // Settings elements
         const settingsBtn = document.getElementById('settingsBtn');
         const settingsSection = document.getElementById('settingsSection');
@@ -361,7 +425,7 @@
         // =============================================================================
         // STATE VARIABLES
         // =============================================================================
-        
+
         let currentStoryType = null;
         let selectedClassicTale = null;
         let selectedClassicTaleMixed = null;
@@ -372,10 +436,10 @@
         // =============================================================================
         // STORY TYPE SELECTION LOGIC
         // =============================================================================
-        
+
         // Handle story type card clicks
         storyTypeCards.forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 const storyType = this.getAttribute('data-type');
                 selectStoryType(storyType);
             });
@@ -388,14 +452,14 @@
 
             // Set current selection
             currentStoryType = storyType;
-            
+
             // Hide Step 1 (story type selection) and main header
             document.querySelector('.story-type-selection').style.display = 'none';
             document.getElementById('mainHeader').style.display = 'none';
-            
+
             // Show Step 2 (customization) after a brief transition
             setTimeout(() => {
-                switch(storyType) {
+                switch (storyType) {
                     case 'original':
                         showOriginalCustomization();
                         break;
@@ -437,18 +501,18 @@
             try {
                 // Hide all Step 2 sections
                 hideAllCustomizations();
-                
+
                 // Show Step 1 again
                 const storySelection = document.querySelector('.story-type-selection');
                 if (storySelection) {
                     storySelection.style.display = 'grid'; // Use grid instead of block
                 }
-                
+
                 const mainHeader = document.getElementById('mainHeader');
                 if (mainHeader) {
                     mainHeader.style.display = 'block'; // Show main header again
                 }
-                
+
                 // Clear current selection
                 currentStoryType = null;
                 if (storyTypeCards) {
@@ -463,12 +527,12 @@
         // =============================================================================
         // CLASSIC TALES BROWSER AND SEARCH
         // =============================================================================
-        
+
         async function loadClassicTales() {
             try {
                 const response = await fetch('/classic-tales');
                 const result = await response.json();
-                
+
                 if (result.success) {
                     allTales = result.tales.filter(tale => tale.id !== 'surprise'); // Remove "Surprise me" for browsing
                     allTales.sort((a, b) => a.title.localeCompare(b.title)); // Sort alphabetically
@@ -484,7 +548,7 @@
             const getEmojiForCategory = (category) => {
                 const emojiMap = {
                     'fairy_tale': '🧚',
-                    'fable': '🦊', 
+                    'fable': '🦊',
                     'myth': '⚡',
                     'legend': '⚔️',
                     'religious': '🕊️',
@@ -509,7 +573,7 @@
 
             // Add click handlers for tale selection
             container.querySelectorAll('.tale-item').forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function () {
                     const taleId = this.dataset.taleId;
                     const taleType = this.dataset.type;
                     selectTale(taleId, taleType, this);
@@ -523,10 +587,10 @@
             container.querySelectorAll('.tale-item').forEach(item => {
                 item.classList.remove('selected');
             });
-            
+
             // Mark this tale as selected
             element.classList.add('selected');
-            
+
             if (type === 'classic') {
                 selectedClassicTale = taleId;
                 generateClassic.style.display = 'block';
@@ -539,9 +603,9 @@
 
         // Search functionality
         function setupTaleSearch(searchInput, browser, type) {
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', function () {
                 const query = this.value.toLowerCase();
-                const filteredTales = allTales.filter(tale => 
+                const filteredTales = allTales.filter(tale =>
                     tale.title.toLowerCase().includes(query) ||
                     tale.description.toLowerCase().includes(query)
                 );
@@ -552,7 +616,7 @@
         // =============================================================================
         // BUTTON HANDLERS AND STORY GENERATION
         // =============================================================================
-        
+
         // Generate Original Story
         generateOriginal.addEventListener('click', () => {
             generateStory('original', originalTopic.value || '');
@@ -630,7 +694,7 @@
                     currentStoryData.title = title;
                     currentStoryData.story_text = storyBody;
                     currentStoryData.language = result.language || 'English';
-                    
+
                     // Hide the story creation interface and show only the story
                     document.querySelector('.story-creator').style.display = 'none';
                     storyOutput.style.display = 'block';
@@ -666,19 +730,19 @@
         // =============================================================================
         // INITIALIZATION
         // =============================================================================
-        
+
         // Initialize the interface
         function initializeInterface() {
             // Load classic tales
             loadClassicTales();
-            
+
             // Setup search functionality
             setupTaleSearch(taleSearch, talesBrowser, 'classic');
             setupTaleSearch(taleSearchMixed, talesBrowserMixed, 'classic_mixed');
-            
+
             // Initialize login state
             checkLogin();
-            
+
             // Hide all customizations initially
             hideAllCustomizations();
         }
@@ -686,7 +750,7 @@
         // =============================================================================
         // UTILITY FUNCTIONS
         // =============================================================================
-        
+
         // Helper to check if logged in
         function isLoggedIn() {
             return localStorage.getItem('user_id') && localStorage.getItem('token');
@@ -725,10 +789,10 @@
         // =============================================================================
         // EVENT HANDLERS - ALL BUTTON CLICKS AND INTERACTIONS  
         // =============================================================================
-        
+
         // Story Type Card Selection
         storyTypeCards.forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 const storyType = this.getAttribute('data-type');
                 selectStoryType(storyType);
             });
@@ -757,59 +821,59 @@
         });
 
         // Length Adjustment Buttons - Original
-        document.getElementById('lengthUp').addEventListener('click', function() {
+        document.getElementById('lengthUp').addEventListener('click', function () {
             const lengthInput = document.getElementById('length');
             const current = parseInt(lengthInput.value) || 5;
             if (current < 30) lengthInput.value = current + 1;
         });
 
-        document.getElementById('lengthDown').addEventListener('click', function() {
+        document.getElementById('lengthDown').addEventListener('click', function () {
             const lengthInput = document.getElementById('length');
             const current = parseInt(lengthInput.value) || 5;
             if (current > 1) lengthInput.value = current - 1;
         });
 
         // Length Adjustment Buttons - Classic
-        document.getElementById('lengthUpClassic').addEventListener('click', function() {
+        document.getElementById('lengthUpClassic').addEventListener('click', function () {
             const lengthInput = document.getElementById('lengthClassic');
             const current = parseInt(lengthInput.value) || 5;
             if (current < 30) lengthInput.value = current + 1;
         });
 
-        document.getElementById('lengthDownClassic').addEventListener('click', function() {
+        document.getElementById('lengthDownClassic').addEventListener('click', function () {
             const lengthInput = document.getElementById('lengthClassic');
             const current = parseInt(lengthInput.value) || 5;
             if (current > 1) lengthInput.value = current - 1;
         });
 
         // Length Adjustment Buttons - Classic Mixed
-        document.getElementById('lengthUpClassicMixed').addEventListener('click', function() {
+        document.getElementById('lengthUpClassicMixed').addEventListener('click', function () {
             const lengthInput = document.getElementById('lengthClassicMixed');
             const current = parseInt(lengthInput.value) || 5;
             if (current < 30) lengthInput.value = current + 1;
         });
 
-        document.getElementById('lengthDownClassicMixed').addEventListener('click', function() {
+        document.getElementById('lengthDownClassicMixed').addEventListener('click', function () {
             const lengthInput = document.getElementById('lengthClassicMixed');
             const current = parseInt(lengthInput.value) || 5;
             if (current > 1) lengthInput.value = current - 1;
         });
 
         // Login/Register Form Toggles
-        showRegisterBtn.addEventListener('click', function() {
+        showRegisterBtn.addEventListener('click', function () {
             loginForm.style.display = 'none';
             registerForm.style.display = 'block';
             loginError.style.display = 'none';
         });
 
-        showLoginBtn.addEventListener('click', function() {
+        showLoginBtn.addEventListener('click', function () {
             registerForm.style.display = 'none';
             loginForm.style.display = 'block';
             registerError.style.display = 'none';
         });
 
         // Login Handler
-        loginBtn.addEventListener('click', async function() {
+        loginBtn.addEventListener('click', async function () {
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
 
@@ -845,7 +909,7 @@
         });
 
         // Register Handler
-        registerBtn.addEventListener('click', async function() {
+        registerBtn.addEventListener('click', async function () {
             const displayName = document.getElementById('registerName').value.trim();
             const email = document.getElementById('registerEmail').value.trim();
             const password = document.getElementById('registerPassword').value;
@@ -882,7 +946,7 @@
         });
 
         // Logout Handler
-        logoutBtn.addEventListener('click', function() {
+        logoutBtn.addEventListener('click', function () {
             localStorage.removeItem('user_id');
             localStorage.removeItem('token');
             localStorage.removeItem('display_name');
@@ -892,12 +956,12 @@
 
         // Star Rating Handlers
         stars.forEach(star => {
-            star.addEventListener('click', function() {
+            star.addEventListener('click', function () {
                 selectedRating = parseInt(this.dataset.rating);
                 updateStarDisplay();
             });
 
-            star.addEventListener('mouseenter', function() {
+            star.addEventListener('mouseenter', function () {
                 const hoverRating = parseInt(this.dataset.rating);
                 stars.forEach(s => {
                     if (parseInt(s.dataset.rating) <= hoverRating) {
@@ -909,12 +973,12 @@
             });
         });
 
-        starRating.addEventListener('mouseleave', function() {
+        starRating.addEventListener('mouseleave', function () {
             stars.forEach(s => s.classList.remove('hovered'));
         });
 
         // Navigation Handlers
-        newStoryBtn.addEventListener('click', function() {
+        newStoryBtn.addEventListener('click', function () {
             storyOutput.style.display = 'none';
             document.querySelector('.story-creator').style.display = 'block';
             backToStorySelection(); // Return to Step 1
@@ -929,13 +993,13 @@
 
         // Star rating click handler
         stars.forEach(star => {
-            star.addEventListener('click', function() {
+            star.addEventListener('click', function () {
                 selectedRating = parseInt(this.dataset.rating);
                 updateStarDisplay();
             });
 
             // Hover handlers for preview effect
-            star.addEventListener('mouseenter', function() {
+            star.addEventListener('mouseenter', function () {
                 const hoverRating = parseInt(this.dataset.rating);
                 stars.forEach(s => {
                     if (parseInt(s.dataset.rating) <= hoverRating) {
@@ -948,7 +1012,7 @@
         });
 
         // Remove hover effect when leaving the star rating area
-        starRating.addEventListener('mouseleave', function() {
+        starRating.addEventListener('mouseleave', function () {
             stars.forEach(s => s.classList.remove('hovered'));
         });
 
@@ -966,7 +1030,7 @@
         // Story saving and rating functionality (keeping existing)
 
         // Save story handler
-        saveStoryBtn.addEventListener('click', async function() {
+        saveStoryBtn.addEventListener('click', async function () {
             if (selectedRating === 0) {
                 saveMessage.textContent = 'Please select a rating first!';
                 saveMessage.className = 'error-text';
@@ -1014,7 +1078,7 @@
         });
 
         // My Stories button handler
-        myStoriesBtn.addEventListener('click', async function() {
+        myStoriesBtn.addEventListener('click', async function () {
             const userId = localStorage.getItem('user_id');
             const token = localStorage.getItem('token');
             if (!userId || !token) return;
@@ -1025,7 +1089,7 @@
 
                 if (result.success) {
                     displayStories(result.stories);
-                    
+
                     // Hide all other sections and show my stories
                     hideAllCustomizations();
                     document.querySelector('.story-creator').style.display = 'none';
@@ -1052,7 +1116,7 @@
                     </div>
                     <div class="story-meta">
                         <div class="story-rating-edit star-rating" data-story-id="${story.id}" data-current-rating="${story.rating}">
-                            ${[1,2,3,4,5].map(i => `<span class="star ${i <= story.rating ? 'selected' : ''}" data-rating="${i}">&#9733;</span>`).join('')}
+                            ${[1, 2, 3, 4, 5].map(i => `<span class="star ${i <= story.rating ? 'selected' : ''}" data-rating="${i}">&#9733;</span>`).join('')}
                         </div>
                         <span class="story-info">${story.language} | ${story.length_minutes} min | ${story.story_type}</span>
                     </div>
@@ -1071,7 +1135,7 @@
 
                 starsInDiv.forEach(star => {
                     // Hover effect
-                    star.addEventListener('mouseenter', function() {
+                    star.addEventListener('mouseenter', function () {
                         const hoverRating = parseInt(this.dataset.rating);
                         starsInDiv.forEach(s => {
                             if (parseInt(s.dataset.rating) <= hoverRating) {
@@ -1083,7 +1147,7 @@
                     });
 
                     // Click to update rating
-                    star.addEventListener('click', async function() {
+                    star.addEventListener('click', async function () {
                         const newRating = parseInt(this.dataset.rating);
 
                         try {
@@ -1117,7 +1181,7 @@
                 });
 
                 // Remove hover effect when leaving
-                ratingDiv.addEventListener('mouseleave', function() {
+                ratingDiv.addEventListener('mouseleave', function () {
                     const currentRating = parseInt(this.dataset.currentRating);
                     starsInDiv.forEach(s => {
                         s.classList.remove('hovered');
@@ -1127,20 +1191,20 @@
 
             // Add click handlers for remove buttons
             document.querySelectorAll('.remove-story-btn').forEach(removeBtn => {
-                removeBtn.addEventListener('click', async function() {
+                removeBtn.addEventListener('click', async function () {
                     const storyId = this.dataset.storyId;
                     const storyElement = this.closest('.saved-story');
                     const storyTitle = storyElement.querySelector('.saved-story-title').textContent;
-                    
+
                     // Show confirmation dialog
                     if (!confirm(`Are you sure you want to delete "${storyTitle}"?\n\nThis action cannot be undone.`)) {
                         return;
                     }
-                    
+
                     // Disable button during deletion
                     this.disabled = true;
                     this.textContent = '⏳';
-                    
+
                     try {
                         const response = await fetch('/delete-story', {
                             method: 'POST',
@@ -1153,18 +1217,18 @@
                                 token: localStorage.getItem('token')
                             })
                         });
-                        
+
                         const result = await response.json();
-                        
+
                         if (result.success) {
                             // Remove story from DOM with animation
                             storyElement.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
                             storyElement.style.opacity = '0';
                             storyElement.style.transform = 'translateX(-20px)';
-                            
+
                             setTimeout(() => {
                                 storyElement.remove();
-                                
+
                                 // Check if no stories left
                                 const remainingStories = document.querySelectorAll('.saved-story');
                                 if (remainingStories.length === 0) {
@@ -1188,7 +1252,7 @@
         }
 
         // Back to generator button
-        backToGeneratorBtn.addEventListener('click', function() {
+        backToGeneratorBtn.addEventListener('click', function () {
             myStoriesSection.style.display = 'none';
             document.querySelector('.story-creator').style.display = 'block';
             // Ensure we return to Step 1, not Step 2
@@ -1196,7 +1260,7 @@
         });
 
         // Settings button handler
-        settingsBtn.addEventListener('click', async function() {
+        settingsBtn.addEventListener('click', async function () {
             // Hide all other sections and show settings
             hideAllCustomizations();
             document.getElementById('loginSection').style.display = 'none';
@@ -1241,7 +1305,7 @@
         });
 
         // Save settings handler
-        saveSettingsBtn.addEventListener('click', async function() {
+        saveSettingsBtn.addEventListener('click', async function () {
             const userId = localStorage.getItem('user_id');
             const token = localStorage.getItem('token');
             if (!userId || !token) return;
@@ -1293,7 +1357,7 @@
         });
 
         // Back from settings button
-        backFromSettingsBtn.addEventListener('click', function() {
+        backFromSettingsBtn.addEventListener('click', function () {
             settingsSection.style.display = 'none';
             document.getElementById('loginSection').style.display = 'block';
             document.querySelector('.story-creator').style.display = 'block';
@@ -1302,13 +1366,13 @@
         });
 
         // Age +/- buttons for settings
-        document.getElementById('ageUp').addEventListener('click', function() {
+        document.getElementById('ageUp').addEventListener('click', function () {
             const ageInput = document.getElementById('childAge');
             const current = parseInt(ageInput.value) || 6;
             if (current < 10) ageInput.value = current + 1;
         });
 
-        document.getElementById('ageDown').addEventListener('click', function() {
+        document.getElementById('ageDown').addEventListener('click', function () {
             const ageInput = document.getElementById('childAge');
             const current = parseInt(ageInput.value) || 6;
             if (current > 2) ageInput.value = current - 1;
@@ -1318,7 +1382,7 @@
         const backFromOriginal = document.getElementById('backFromOriginal');
         const backFromClassic = document.getElementById('backFromClassic');
         const backFromClassicMixed = document.getElementById('backFromClassicMixed');
-        
+
         if (backFromOriginal) {
             backFromOriginal.addEventListener('click', backToStorySelection);
         }
@@ -1331,6 +1395,215 @@
 
         // Initialize the interface when page loads
         initializeInterface();
+
+        // =============================================================================
+        // AUDIO NARRATION FUNCTIONALITY (Web Speech API)
+        // =============================================================================
+
+        let speechSynthesis = window.speechSynthesis;
+        let currentUtterance = null;
+        let isPlaying = false;
+        let isPaused = false;
+        let availableVoices = [];
+
+        // DOM elements for narration
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const voiceSelect = document.getElementById('voiceSelect');
+        const speedControl = document.getElementById('speedControl');
+        const speedValue = document.getElementById('speedValue');
+        const narrationStatus = document.getElementById('narrationStatus');
+        const narrationControls = document.getElementById('narrationControls');
+        const narrationUnsupported = document.getElementById('narrationUnsupported');
+        const playPauseIcon = document.getElementById('playPauseIcon');
+        const playPauseText = document.getElementById('playPauseText');
+
+        // Check if Web Speech API is supported
+        function checkNarrationSupport() {
+            if (!('speechSynthesis' in window)) {
+                narrationUnsupported.style.display = 'block';
+                playPauseBtn.disabled = true;
+                stopBtn.disabled = true;
+                voiceSelect.disabled = true;
+                speedControl.disabled = true;
+                return false;
+            }
+            return true;
+        }
+
+        // Load available voices
+        function loadVoices() {
+            availableVoices = speechSynthesis.getVoices();
+
+            if (availableVoices.length > 0) {
+                voiceSelect.innerHTML = '';
+
+                // Filter for English voices and prioritize good ones
+                const englishVoices = availableVoices.filter(voice =>
+                    voice.lang.startsWith('en')
+                );
+
+                // If no English voices, use all voices
+                const voicesToShow = englishVoices.length > 0 ? englishVoices : availableVoices;
+
+                voicesToShow.forEach((voice, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `${voice.name} (${voice.lang})`;
+
+                    // Mark default voice
+                    if (voice.default) {
+                        option.textContent += ' - Default';
+                        option.selected = true;
+                    }
+
+                    voiceSelect.appendChild(option);
+                });
+            }
+        }
+
+        // Initialize voices (some browsers need this event)
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = loadVoices;
+        }
+        loadVoices();
+
+        // Play or pause narration
+        function playPauseNarration() {
+            if (!checkNarrationSupport()) return;
+
+            if (isPaused) {
+                // Resume
+                speechSynthesis.resume();
+                isPaused = false;
+                isPlaying = true;
+                updateNarrationUI('playing');
+            } else if (isPlaying) {
+                // Pause
+                speechSynthesis.pause();
+                isPaused = true;
+                isPlaying = false;
+                updateNarrationUI('paused');
+            } else {
+                // Start new narration
+                const storyTextElement = document.getElementById('storyText');
+                const text = storyTextElement.textContent;
+
+                if (!text) return;
+
+                // Create utterance
+                currentUtterance = new SpeechSynthesisUtterance(text);
+
+                // Set voice
+                const selectedVoiceIndex = voiceSelect.value;
+                if (selectedVoiceIndex && availableVoices[selectedVoiceIndex]) {
+                    currentUtterance.voice = availableVoices[selectedVoiceIndex];
+                }
+
+                // Set rate (volume defaults to 1.0 / 100%)
+                currentUtterance.rate = parseFloat(speedControl.value);
+                currentUtterance.volume = 1.0;
+
+                // Event handlers
+                currentUtterance.onstart = () => {
+                    isPlaying = true;
+                    isPaused = false;
+                    updateNarrationUI('playing');
+                };
+
+                currentUtterance.onend = () => {
+                    isPlaying = false;
+                    isPaused = false;
+                    updateNarrationUI('ready');
+                };
+
+                currentUtterance.onerror = (event) => {
+                    console.error('Speech synthesis error:', event);
+                    isPlaying = false;
+                    isPaused = false;
+                    updateNarrationUI('ready');
+                };
+
+                // Start speaking
+                speechSynthesis.speak(currentUtterance);
+            }
+        }
+
+        // Stop narration
+        function stopNarration() {
+            if (!checkNarrationSupport()) return;
+
+            speechSynthesis.cancel();
+            isPlaying = false;
+            isPaused = false;
+            currentUtterance = null;
+            updateNarrationUI('ready');
+        }
+
+        // Update UI based on narration state
+        function updateNarrationUI(state) {
+            switch (state) {
+                case 'playing':
+                    playPauseIcon.textContent = '⏸️';
+                    playPauseText.textContent = 'Pause';
+                    playPauseBtn.classList.add('playing');
+                    narrationStatus.textContent = 'Playing';
+                    narrationStatus.className = 'narration-status playing';
+                    stopBtn.disabled = false;
+                    break;
+
+                case 'paused':
+                    playPauseIcon.textContent = '▶️';
+                    playPauseText.textContent = 'Resume';
+                    playPauseBtn.classList.remove('playing');
+                    narrationStatus.textContent = 'Paused';
+                    narrationStatus.className = 'narration-status paused';
+                    stopBtn.disabled = false;
+                    break;
+
+                case 'ready':
+                default:
+                    playPauseIcon.textContent = '▶️';
+                    playPauseText.textContent = 'Play';
+                    playPauseBtn.classList.remove('playing');
+                    narrationStatus.textContent = 'Ready';
+                    narrationStatus.className = 'narration-status';
+                    stopBtn.disabled = true;
+                    break;
+            }
+        }
+
+        // Update speed display
+        speedControl.addEventListener('input', function () {
+            const speed = parseFloat(this.value);
+            speedValue.textContent = speed.toFixed(1) + 'x';
+
+            // Note: Web Speech API doesn't support changing rate mid-speech
+            // Speed will apply to next playback
+        });
+
+        // Event listeners for narration buttons
+        if (playPauseBtn) {
+            playPauseBtn.addEventListener('click', playPauseNarration);
+        }
+
+        if (stopBtn) {
+            stopBtn.addEventListener('click', stopNarration);
+            stopBtn.disabled = true; // Initially disabled
+        }
+
+        // Stop narration when generating a new story
+        const originalGenerateStory = generateStory;
+        generateStory = async function (...args) {
+            stopNarration();
+            return originalGenerateStory.apply(this, args);
+        };
+
+        // Check support on page load
+        if (narrationControls) {
+            checkNarrationSupport();
+        }
     </script>
 </body>
+
 </html>
