@@ -37,7 +37,7 @@ Setting up accounts and planning before development begins.
   - ⚠️ Do this NOW — don't wait until you need to submit
 
 ### Supabase Setup
-- [ ] **Create Supabase Project**
+- [x] **Create Supabase Project**
   - URL: https://supabase.com
   - Create new project for "Bedtime Story Generator"
   - Note down: Project URL, Anon Key, JWT Secret
@@ -49,10 +49,10 @@ Setting up accounts and planning before development begins.
   - Configure redirect URLs for mobile app
 
 ### Development Environment
-- [ ] **Install Node.js** (LTS version, 18.x or 20.x)
-- [ ] **Install Expo CLI**: `npm install -g expo-cli`
-- [ ] **Install EAS CLI**: `npm install -g eas-cli`
-- [ ] **Create Expo Account**: https://expo.dev (for builds)
+- [x] **Install Node.js** (LTS version, 18.x or 20.x)
+- [x] **Install Expo CLI**: `npm install -g expo-cli`
+- [x] **Install EAS CLI**: `npm install -g eas-cli`
+- [x] **Create Expo Account**: https://expo.dev (for builds)
 
 ### Planning
 - [ ] **Review this todo.md with Claude** before starting Phase 1

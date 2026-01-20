@@ -81,8 +81,8 @@ We are building a **Cross-Platform Mobile App** using **React Native + Expo**, w
 ┌─────────────────────────────────────────────────────────────┐
 │              GUEST MODE (No Account Required)               │
 │  • Generate stories ✓                                       │
-│  • Customize settings ✓                                     │
 │  • Read stories ✓                                           │
+│  • Customize settings ✗ (prompts for account)               │
 │  • Save stories ✗ (prompts for account)                     │
 └─────────────────────┬───────────────────────────────────────┘
                       ▼ User wants to save a story
