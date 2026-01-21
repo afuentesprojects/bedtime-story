@@ -20,8 +20,7 @@ Setting up accounts and planning before development begins.
 
 ---
 
-## Phase 0: Preparation (Do This First!)
-**Timeline: 1-2 days**
+## Phase 0: Preparation
 **Goal: Get accounts ready while planning the work**
 
 ### Developer Accounts (START IMMEDIATELY)
@@ -67,7 +66,6 @@ Setting up accounts and planning before development begins.
 ---
 
 ## Phase 1: Backend Deployment
-**Timeline: 1 week**
 **Goal: Flask API accessible from the internet**
 
 ### 1.1 Backend Refactoring
@@ -183,19 +181,18 @@ Setting up accounts and planning before development begins.
 ---
 
 ## Phase 2: Mobile App Development
-**Timeline: 2-4 weeks**
 **Goal: Working app on physical devices**
 
 ### 2.1 Project Setup
 *Initialize React Native + Expo project*
 
-- [ ] **Create new Expo project**
+- [x] **Create new Expo project**
   ```bash
   npx create-expo-app bedtime-stories --template expo-template-blank-typescript
   cd bedtime-stories
   ```
 
-- [ ] **Install core dependencies**
+- [x] **Install core dependencies**
   ```bash
   npx expo install expo-router react-native-safe-area-context react-native-screens
   npx expo install @supabase/supabase-js @react-native-async-storage/async-storage
